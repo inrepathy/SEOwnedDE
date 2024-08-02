@@ -3,7 +3,7 @@
 #include "../Features/CFG.h"
 #include "../Features/Players/Players.h"
 
-MAKE_SIGNATURE(CBaseHudChatLine_InsertAndColorizeText, "client.dll", "55 8B EC 83 EC 40 53 8B D9 56 57 89 5D D4", 0x0);
+MAKE_SIGNATURE(CBaseHudChatLine_InsertAndColorizeText, "client.dll", "44 89 44 24 ? 55 53 56 57", 0x0);
 
 MAKE_HOOK(CBaseHudChatLine_InsertAndColorizeText, Signatures::CBaseHudChatLine_InsertAndColorizeText.Get(), void, __fastcall,
 	void* ecx, wchar_t* buf, int clientIndex)
@@ -50,8 +50,8 @@ MAKE_HOOK(CBaseHudChatLine_InsertAndColorizeText, Signatures::CBaseHudChatLine_I
 
 		if (!prefix.empty())
 		{
-			const int nameStart = *reinterpret_cast<int*>(reinterpret_cast<uintptr_t>(ecx) + 0x290);
-			const int nameLength = *reinterpret_cast<int*>(reinterpret_cast<uintptr_t>(ecx) + 0x264);
+			const int nameStart = *reinterpret_cast<int*>(reinterpret_cast<uintptr_t>(ecx) + 928);
+			const int nameLength = *reinterpret_cast<int*>(reinterpret_cast<uintptr_t>(ecx) + 864);
 
 			str.insert(nameStart + nameLength, L"\x1");
 			str.insert(0, prefix);

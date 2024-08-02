@@ -3,8 +3,8 @@
 #include "../Features/Materials/Materials.h"
 #include "../Features/Outlines/Outlines.h"
 
-MAKE_SIGNATURE(CBaseWorldView_DrawExecute, "client.dll", "55 8B EC 83 EC 08 A1 ? ? ? ? 53 56 57 8B D9 89 45 F8", 0x0);
-MAKE_SIGNATURE(CParticleSystemMgr_DrawRenderCache, "client.dll", "55 8B EC 81 EC 38 02 00 00 53 8B D9 57", 0x0);
+MAKE_SIGNATURE(CBaseWorldView_DrawExecute, "client.dll", "40 53 55 56 41 56 41 57 48 81 EC", 0x0);
+MAKE_SIGNATURE(CParticleSystemMgr_DrawRenderCache, "client.dll", "48 8B C4 88 50 ? 48 89 48 ? 55 57", 0x0);
 
 bool isDrawingWorld = false;
 

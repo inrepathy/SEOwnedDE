@@ -342,17 +342,17 @@ public:
 	}
 
 	float &m_flLastMovementStunChange() {
-		static int nOffset = 7072;
+		static int nOffset = NetVars::GetNetVar("CTFPlayer", "m_hItem") - 180;
 		return *reinterpret_cast<float *>(reinterpret_cast<std::uintptr_t>(this) + nOffset);
 	}
 
 	float &m_flStunLerpTarget() {
-		static int nOffset = 7068;
+		static int nOffset = NetVars::GetNetVar("CTFPlayer", "m_hItem") - 184;
 		return *reinterpret_cast<float *>(reinterpret_cast<std::uintptr_t>(this) + nOffset);
 	}
 
 	bool &m_bStunNeedsFadeOut() {
-		static int nOffset = 7064;
+		static int nOffset = NetVars::GetNetVar("CTFPlayer", "m_hItem") - 188;
 		return *reinterpret_cast<bool *>(reinterpret_cast<std::uintptr_t>(this) + nOffset);
 	}
 

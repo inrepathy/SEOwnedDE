@@ -2,7 +2,7 @@
 
 #include "../Features/CFG.h"
 
-MAKE_SIGNATURE(CTFPlayer_MaybeDrawRailgunBeam, "client.dll", "55 8B EC 56 8B 75 0C 57 6A 01 6A 00 56 68 ? ? ? ? 6A 00 8B F9 E8 ? ? ? ? 83 C4 14 85 C0", 0x0);
+MAKE_SIGNATURE(CTFPlayer_MaybeDrawRailgunBeam, "client.dll", "48 89 74 24 ? 55 57 41 55 41 56 41 57 48 8D AC 24 ? ? ? ? 48 81 EC ? ? ? ? F3 41 0F 10 58", 0x0);
 
 //Hello I am TF2 developer and today we're going to shitcode
 

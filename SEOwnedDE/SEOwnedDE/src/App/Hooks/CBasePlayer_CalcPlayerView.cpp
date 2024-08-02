@@ -2,7 +2,7 @@
 
 #include "../Features/CFG.h"
 
-MAKE_SIGNATURE(CBasePlayer_CalcPlayerView, "client.dll", "55 8B EC 83 EC 18 53 56 8B F1 8B 0D ? ? ? ? 57 8B 01", 0x0);
+MAKE_SIGNATURE(CBasePlayer_CalcPlayerView, "client.dll", "48 89 5C 24 ? 56 57 41 54 48 83 EC ? 48 8B D9", 0x0);
 
 MAKE_HOOK(CBasePlayer_CalcPlayerView, Signatures::CBasePlayer_CalcPlayerView.Get(), void, __fastcall,
 	void* ecx, Vector& eyeOrigin, QAngle& eyeAngles, float& fov)

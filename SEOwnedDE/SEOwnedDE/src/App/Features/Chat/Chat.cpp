@@ -2,7 +2,7 @@
 
 #include "../CFG.h"
 
-MAKE_SIGNATURE(CTFGameRules_ModifySentChat, "client.dll", "55 8B EC 80 B9 ? ? ? ? ? 56 8B 75 08 74 26", 0x0); // update me
+MAKE_SIGNATURE(CTFGameRules_ModifySentChat, "client.dll", "48 89 5C 24 ? 57 48 83 EC ? 80 B9 ? ? ? ? ? 41 8B F8", 0x0);
 
 //pasted from mfed :muscle:
 const std::vector<std::pair<std::string, std::string>> patterns
@@ -67,7 +67,7 @@ MAKE_HOOK(IVEngineClient013_ClientCmd_Unrestricted, Memory::GetVFunc(I::EngineCl
 }
 
 MAKE_HOOK(CTFGameRules_ModifySentChat, Signatures::CTFGameRules_ModifySentChat.Get(), void, __fastcall,
-    void *ecx, char *pBuf, int iBufSize)
+    void* ecx, char *pBuf, int iBufSize)
 {
     static ConVar *tf_medieval_autorp{ I::CVar->FindVar("tf_medieval_autorp") };
     static ConVar *english{ I::CVar->FindVar("english") };
@@ -76,7 +76,7 @@ MAKE_HOOK(CTFGameRules_ModifySentChat, Signatures::CTFGameRules_ModifySentChat.G
     {
         struct s_CTFGameRules
         {
-            char pad[1051]{};
+            char pad[1179]{};
             bool m_bPlayingMedieval{};
         };
 

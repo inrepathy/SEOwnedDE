@@ -106,6 +106,24 @@
     <ClCompile Include="src\App\Hooks\CClientState_GetTime.cpp" />
     <ClCompile Include="src\SDK\TF2\bitbuf.cpp" />
     <ClCompile Include="src\SDK\TF2\netmessages.cpp" />
+    <ClCompile Include="src\App\Hooks\CBaseEntity_AddVar.cpp" />
+    <ClCompile Include="src\App\Hooks\CBaseEntity_BaseInterpolatePart1.cpp" />
+    <ClCompile Include="src\App\Hooks\CBaseHudChatLine_InsertAndColorizeText.cpp" />
+    <ClCompile Include="src\App\Hooks\CBasePlayer_CalcPlayerView.cpp" />
+    <ClCompile Include="src\App\Hooks\CHudTFCrosshair_ShouldDraw.cpp" />
+    <ClCompile Include="src\App\Hooks\CMultiPlayerAnimState_ResetGestureSlot.cpp" />
+    <ClCompile Include="src\App\Hooks\CParticleSystemMgr_DrawRenderCache.cpp" />
+    <ClCompile Include="src\App\Hooks\CTFDroppedWeapon.cpp" />
+    <ClCompile Include="src\App\Hooks\CTFPlayer_MaybeDrawRailgunBeam.cpp" />
+    <ClCompile Include="src\App\Hooks\CTFPlayerShared_InCond.cpp" />
+    <ClCompile Include="src\App\Hooks\CTFWeapon_ShouldDraw.cpp" />
+    <ClCompile Include="src\App\Hooks\CTFWeaponBase_GetTracerType.cpp" />
+    <ClCompile Include="src\App\Hooks\CTFWearable_ShouldDraw.cpp" />
+    <ClCompile Include="src\App\Hooks\CUserMessages_DispatchUserMessage.cpp" />
+    <ClCompile Include="src\App\Hooks\CViewRender_DrawViewModels.cpp" />
+    <ClCompile Include="src\App\Hooks\CViewRender_PerformScreenOverlay.cpp" />
+    <ClCompile Include="src\App\Hooks\R_ComputeLightingOrigin.cpp" />
+    <ClCompile Include="src\App\Hooks\R_DrawSkyBox.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\App\Features\Aimbot\AimbotHitscan\AimbotHitscan.h" />

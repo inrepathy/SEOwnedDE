@@ -3,7 +3,7 @@
 #include "../Features/CFG.h"
 #include "../Features/SeedPred/SeedPred.h"
 
-MAKE_SIGNATURE(CUserMessages_DispatchUserMessage, "client.dll", "55 8B EC 8B 55 08 83 EC 18 56", 0x0);
+MAKE_SIGNATURE(CUserMessages_DispatchUserMessage, "client.dll", "40 56 48 83 EC ? 49 8B F0", 0x0);
 
 MAKE_HOOK(CUserMessages_DispatchUserMessage, Signatures::CUserMessages_DispatchUserMessage.Get(), bool, __fastcall,
 	void* ecx, int msg_type, bf_read& msg_data)

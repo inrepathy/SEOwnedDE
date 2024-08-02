@@ -2,7 +2,7 @@
 
 #include "../Features/CFG.h"
 
-MAKE_SIGNATURE(CTFWeaponBase_GetTracerType, "client.dll", "55 8B EC 51 53 56 57 8B F9 E8 ? ? ? ? 6A 00", 0x0);
+MAKE_SIGNATURE(CTFWeaponBase_GetTracerType, "client.dll", "48 89 5C 24 ? 48 89 6C 24 ? 48 89 74 24 ? 57 48 83 EC ? 48 8B D9 E8 ? ? ? ? 4C 8D 0D", 0x0);
 
 MAKE_HOOK(CTFWeaponBase_GetTracerType, Signatures::CTFWeaponBase_GetTracerType.Get(), const char*, __fastcall,
 	C_TFWeaponBase* ecx)

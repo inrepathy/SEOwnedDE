@@ -4,8 +4,8 @@
 #include "../../Utils/SignatureManager/SignatureManager.h"
 #include "IAppSystem.h"
 
-MAKE_SIGNATURE(CreatePhysicsObject, "vphysics.dll", "55 8B EC 81 EC ? ? ? ? 83 7D 10 00", 0x0); // update me
-MAKE_SIGNATURE(CPhysicsObject_RecomputeDragBases, "vphysics.dll", "55 8B EC 83 EC 38 57 8B F9 8B 07 8B 40 04 FF D0", 0x0); // update me
+MAKE_SIGNATURE(CreatePhysicsObject, "vphysics.dll", "48 89 5C 24 ? 48 89 6C 24 ? 56 57 41 55 41 56 41 57 48 81 EC", 0x0);
+MAKE_SIGNATURE(CPhysicsObject_RecomputeDragBases, "vphysics.dll", "40 57 48 81 EC ? ? ? ? 48 8B 01", 0x0);
 
 using AngularImpulse = Vec3;
 

@@ -2,7 +2,7 @@
 
 #include "../Features/CFG.h"
 
-MAKE_SIGNATURE(R_ComputeLightingOrigin, "engine.dll", "55 8B EC 83 EC 30 56 8B 75 0C 8B 96 ? ? ? ? 85 D2 74 06 8B 54 32 08 EB 02", 0x0);
+MAKE_SIGNATURE(R_ComputeLightingOrigin, "engine.dll", "48 89 5C 24 ? 57 48 83 EC ? 48 63 82", 0x0);
 
 MAKE_HOOK(R_ComputeLightingOrigin, Signatures::R_ComputeLightingOrigin.Get(), void, __cdecl,
 	IClientRenderable* pRenderable, studiohdr_t* pStudioHdr, const matrix3x4_t& matrix, Vector& center)

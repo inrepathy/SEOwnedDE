@@ -1,6 +1,6 @@
 #include "../../SDK/SDK.h"
 
-MAKE_SIGNATURE(CMultiPlayerAnimState_ResetGestureSlot, "client.dll", "55 8B EC 56 8B 75 08 57 56 8B F9 E8 ? ? ? ? 84 C0 74 43 C1 E6 04", 0x0);
+MAKE_SIGNATURE(CMultiPlayerAnimState_ResetGestureSlot, "client.dll", "48 89 5C 24 ? 57 48 83 EC ? 8B DA 48 8B F9 E8 ? ? ? ? 84 C0 74", 0x0);
 
 MAKE_HOOK(CMultiPlayerAnimState_ResetGestureSlot, Signatures::CMultiPlayerAnimState_ResetGestureSlot.Get(), void, __fastcall,
 	CMultiPlayerAnimState* ecx, int iGestureSlot)
