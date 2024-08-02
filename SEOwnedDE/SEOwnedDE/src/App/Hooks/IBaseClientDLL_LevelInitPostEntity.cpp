@@ -3,11 +3,10 @@
 #include "../Features/Players/Players.h"
 #include "../Features/CFG.h"
 
-MAKE_HOOK(
-	IBaseClientDLL_LevelInitPostEntity, Memory::GetVFunc(I::BaseClientDLL, 6),
-	void, __fastcall, void *ecx, void *edx)
+MAKE_HOOK(IBaseClientDLL_LevelInitPostEntity, Memory::GetVFunc(I::BaseClientDLL, 6), void, __fastcall,
+	void* ecx)
 {
-	CALL_ORIGINAL(ecx, edx);
+	CALL_ORIGINAL(ecx);
 
 	H::Entities->UpdateModelIndexes();
 
@@ -28,17 +27,17 @@ MAKE_HOOK(
 
 				if (pi.Ignored)
 				{
-					I::ClientModeShared->PrintToChat(std::format("\x1{} is marked as \x8{}[Ignored]", pi_game.name, CFG::Color_Friend.toHexStr()).c_str());
+					I::ClientModeShared->m_pChatElement->ChatPrintf(0, std::format("\x1{} is marked as \x8{}[Ignored]", pi_game.name, CFG::Color_Friend.toHexStr()).c_str());
 				}
 
 				if (pi.Cheater)
 				{
-					I::ClientModeShared->PrintToChat(std::format("\x1{} is marked as \x8{}[Cheater]", pi_game.name, CFG::Color_Cheater.toHexStr()).c_str());
+					I::ClientModeShared->m_pChatElement->ChatPrintf(0, std::format("\x1{} is marked as \x8{}[Cheater]", pi_game.name, CFG::Color_Cheater.toHexStr()).c_str());
 				}
 
 				if (pi.RetardLegit)
 				{
-					I::ClientModeShared->PrintToChat(std::format("\x1{} is marked as \x8{}[Retard Legit]", pi_game.name, CFG::Color_RetardLegit.toHexStr()).c_str());
+					I::ClientModeShared->m_pChatElement->ChatPrintf(0, std::format("\x1{} is marked as \x8{}[Retard Legit]", pi_game.name, CFG::Color_RetardLegit.toHexStr()).c_str());
 				}
 			}
 		}

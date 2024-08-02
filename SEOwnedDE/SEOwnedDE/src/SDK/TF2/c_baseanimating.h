@@ -4,6 +4,9 @@
 #include "globalvars_base.h"
 #include "studio.h"
 
+MAKE_SIGNATURE(CBaseAnimating_FrameAdvance, "client.dll", "48 89 5C 24 ? 48 89 6C 24 ? 57 48 81 EC ? ? ? ? 44 0F 29 54 24", 0x0);
+MAKE_SIGNATURE(CBaseAnimating_GetBonePosition, "client.dll", "48 89 5C 24 ? 48 89 6C 24 ? 48 89 74 24 ? 57 48 83 EC ? 8B DA 49 8B F1", 0x0);
+
 class C_BaseAnimating : public C_BaseEntity
 {
 public:
@@ -152,7 +155,8 @@ public:
 	}
 
 	CUtlVector<matrix3x4_t> *GetCachedBoneData() {
-		return reinterpret_cast<CUtlVector<matrix3x4_t> *>(reinterpret_cast<std::uintptr_t>(this) + 0x848); //0x844?
+		static int nOffset = NetVars::GetNetVar("CBaseAnimating", "m_hLightingOrigin") - 88;
+		return reinterpret_cast<CUtlVector<matrix3x4_t> *>(reinterpret_cast<std::uintptr_t>(this) + nOffset);
 	}
 
 	CStudioHdr *GetModelPtr() {
@@ -161,11 +165,11 @@ public:
 	}
 
 	float FrameAdvance(float flInterval) {
-		return reinterpret_cast<float(__thiscall *)(void *, float)>(Signatures::C_BaseAnimating_FrameAdvance.Get())(this, flInterval);
+		return reinterpret_cast<float(__fastcall *)(void *, float)>(Signatures::CBaseAnimating_FrameAdvance.Get())(this, flInterval);
 	}
 
 	void GetBonePosition(int iBone, Vector &origin, QAngle &angles) {
-		reinterpret_cast<void(__thiscall *)(void *, int, Vector &, QAngle &)>(Signatures::C_BaseAnimating_GetBonePosition.Get())(this, iBone, origin, angles);
+		reinterpret_cast<void(__fastcall *)(void *, int, Vector &, QAngle &)>(Signatures::CBaseAnimating_GetBonePosition.Get())(this, iBone, origin, angles);
 	}
 };
 

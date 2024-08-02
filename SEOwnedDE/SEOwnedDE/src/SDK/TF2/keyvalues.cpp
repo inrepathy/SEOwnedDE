@@ -7,6 +7,10 @@
 
 #define Q_ARRAYSIZE(A) (sizeof(A)/sizeof((A)[0]))
 
+MAKE_SIGNATURE(KeyValues_LoadFromBuffer, "engine.dll", "4C 89 4C 24 ? 48 89 4C 24 ? 55 56", 0x0);
+MAKE_SIGNATURE(KeyValues_Initialize, "engine.dll", "40 53 48 83 EC ? 48 8B D9 C7 01", 0x0);
+MAKE_SIGNATURE(KeyValues_FindKey, "client.dll", "48 8B C4 53 57 41 56", 0x0);
+
 int UnicodeToUTF8(const wchar_t *unicode, char *ansi, int ansiBufferSize)
 {
 	int result = WideCharToMultiByte(CP_UTF8, 0, unicode, -1, ansi, ansiBufferSize, NULL, NULL);
@@ -24,15 +28,13 @@ int UTF8ToUnicode(const char *ansi, wchar_t *unicode, int unicodeBufferSizeInByt
 
 bool KeyValues::LoadFromBuffer(char const *resource_name, const char *buffer, void *file_system, const char *path_id)
 {
-	using fn = int(__thiscall *)(KeyValues *, char const *, const char *, void *, const char *);
-	static fn FN = reinterpret_cast<fn>(Signatures::KeyValues_LoadFromBuffer.Get());
+	static auto FN = reinterpret_cast<int(__fastcall*)(KeyValues*, char const*, const char*, void*, const char*)>(Signatures::KeyValues_LoadFromBuffer.Get());
 	return FN(this, resource_name, buffer, file_system, path_id);
 }
 
 void KeyValues::Initialize(char *name)
 {
-	using fn = KeyValues *(__thiscall *)(KeyValues *, char *);
-	static fn FN = reinterpret_cast<fn>(Signatures::KeyValues_Initialize.Get() - 0x42);
+	static auto FN = reinterpret_cast<KeyValues * (__fastcall*)(KeyValues*, char*)>(Signatures::KeyValues_Initialize.Get());
 	FN(this, name);
 }
 
@@ -45,8 +47,7 @@ KeyValues::KeyValues(const char *name)
 
 KeyValues *KeyValues::FindKey(const char *keyName, bool bCreate)
 {
-	using fn = KeyValues * (__thiscall *)(KeyValues *, const char *, bool);
-	static fn FN = reinterpret_cast<fn>(Memory::RelToAbs(Signatures::KeyValues_FindKey.Get()));
+	static auto FN = reinterpret_cast<KeyValues * (__fastcall*)(KeyValues*, const char*, bool)>(Signatures::KeyValues_FindKey.Get());
 	return FN(this, keyName, bCreate);
 }
 
@@ -327,7 +328,7 @@ void KeyValues::SetWString(const char *keyName, const wchar_t *value)
 			value = L"";
 		}
 
-		int len = wcslen(value);
+		int len = int(wcslen(value));
 		dat->m_wsValue = new wchar_t[len + 1];
 		memcpy(dat->m_wsValue, value, (len + 1) * sizeof(wchar_t));
 
@@ -355,7 +356,7 @@ void KeyValues::SetString(const char *keyName, const char *value)
 			value = "";
 		}
 
-		int len = strlen(value);
+		int len = int(strlen(value));
 		dat->m_sValue = new char[len + 1];
 		memcpy(dat->m_sValue, value, len + 1);
 

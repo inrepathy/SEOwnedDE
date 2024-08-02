@@ -2,9 +2,10 @@
 
 #include "../Features/CFG.h"
 
-MAKE_HOOK(
-	CTFViewModel_CalcViewModelView, Signatures::CTFViewModel_CalcViewModelView.Get(),
-	void, __fastcall, void *ecx, void *edx, C_BasePlayer *owner, const Vector &eyePosition, const QAngle &eyeAngles)
+MAKE_SIGNATURE(CTFViewModel_CalcViewModelView, "client.dll", "48 89 74 24 ? 55 41 56 41 57 48 8D AC 24", 0x0);
+
+MAKE_HOOK(CTFViewModel_CalcViewModelView, Signatures::CTFViewModel_CalcViewModelView.Get(), void, __fastcall,
+	void* ecx, C_BasePlayer* owner, const Vector &eyePosition, const QAngle &eyeAngles)
 {
 	const auto pLocal = H::Entities->GetLocal();
 
@@ -19,10 +20,10 @@ MAKE_HOOK(
 			(vUp * CFG::Visuals_ViewModel_Offset_Up)
 		);
 
-		CALL_ORIGINAL(ecx, edx, owner, vEyePosition, eyeAngles);
+		CALL_ORIGINAL(ecx, owner, vEyePosition, eyeAngles);
 	}
 	else
 	{
-		CALL_ORIGINAL(ecx, edx, owner, eyePosition, eyeAngles);
+		CALL_ORIGINAL(ecx, owner, eyePosition, eyeAngles);
 	}
 }

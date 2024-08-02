@@ -3,9 +3,10 @@
 #include "../Features/CFG.h"
 #include "../Features/SeedPred/SeedPred.h"
 
-MAKE_HOOK(
-	CUserMessages_DispatchUserMessage, Signatures::CUserMessages_DispatchUserMessage.Get(),
-	bool, __fastcall, void* ecx, void* edx, int msg_type, bf_read& msg_data)
+MAKE_SIGNATURE(CUserMessages_DispatchUserMessage, "client.dll", "55 8B EC 8B 55 08 83 EC 18 56", 0x0);
+
+MAKE_HOOK(CUserMessages_DispatchUserMessage, Signatures::CUserMessages_DispatchUserMessage.Get(), bool, __fastcall,
+	void* ecx, int msg_type, bf_read& msg_data)
 {
 	if (msg_type == 10 && CFG::Visuals_Remove_Screen_Shake)
 	{
@@ -22,5 +23,5 @@ MAKE_HOOK(
 		return true;
 	}
 
-	return CALL_ORIGINAL(ecx, edx, msg_type, msg_data);
+	return CALL_ORIGINAL(ecx, msg_type, msg_data);
 }

@@ -84,11 +84,11 @@ class CClientTools : public IClientTools
 {
 public:
 	/*void OnEntityDeleted(C_BaseEntity *pEntity) {
-		reinterpret_cast<void(__thiscall *)(void *, C_BaseEntity * pEntity)>(Signatures::CClientTools_OnEntityDeleted.Get())(this, pEntity);
+		reinterpret_cast<void(__fastcall *)(void *, C_BaseEntity * pEntity)>(Signatures::CClientTools_OnEntityDeleted.Get())(this, pEntity);
 	}
 
 	void OnEntityCreated(C_BaseEntity *pEntity) {
-		reinterpret_cast<void(__thiscall *)(void *, C_BaseEntity * pEntity)>(Signatures::CClientTools_OnEntityCreated.Get())(this, pEntity);
+		reinterpret_cast<void(__fastcall *)(void *, C_BaseEntity * pEntity)>(Signatures::CClientTools_OnEntityCreated.Get())(this, pEntity);
 	}*/
 };
 

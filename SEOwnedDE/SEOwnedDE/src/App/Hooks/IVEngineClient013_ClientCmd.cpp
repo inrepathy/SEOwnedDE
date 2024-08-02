@@ -2,9 +2,8 @@
 
 #include "../Features/CFG.h"
 
-MAKE_HOOK(
-	IVEngineClient013_ClientCmd, Memory::GetVFunc(I::EngineClient, 7),
-	void, __fastcall, IVEngineClient013* ecx, void* edx, const char* szCmdString)
+MAKE_HOOK(IVEngineClient013_ClientCmd, Memory::GetVFunc(I::EngineClient, 7), void, __fastcall,
+	IVEngineClient013* ecx, const char* szCmdString)
 {
 	auto runFakeTaunt = [&]()
 	{
@@ -218,5 +217,5 @@ MAKE_HOOK(
 	if (runFakeTaunt())
 		return;
 
-	CALL_ORIGINAL(ecx, edx, szCmdString);
+	CALL_ORIGINAL(ecx, szCmdString);
 }

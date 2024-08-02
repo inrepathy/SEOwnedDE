@@ -2,9 +2,10 @@
 
 #include "../Features/CFG.h"
 
-MAKE_HOOK(
-	R_LoadSkys, Memory::RelToAbs(Signatures::R_LoadSkys.Get()),
-	void, __cdecl)
+MAKE_SIGNATURE(R_LoadSkys, "engine.dll", "E8 ? ? ? ? E8 ? ? ? ? 83 3D ? ? ? ? ? 7D 59 8B 0D ? ? ? ? 8B 01 FF 50 60 E8 ? ? ? ? 8B C8 8B 10", 0x0);
+
+MAKE_HOOK(R_LoadSkys, Memory::RelToAbs(Signatures::R_LoadSkys.Get()), void, __cdecl
+	)
 {
 	if (CFG::Misc_Clean_Screenshot && I::EngineClient->IsTakingScreenshot())
 	{

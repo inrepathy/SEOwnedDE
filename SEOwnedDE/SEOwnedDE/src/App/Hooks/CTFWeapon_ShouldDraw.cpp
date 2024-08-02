@@ -1,11 +1,9 @@
 #include "../../SDK/SDK.h"
 
-MAKE_HOOK(
-	C_TFWeapon_ShouldDraw,
-	Signatures::C_TFWeapon_ShouldDraw.Get(),
-	bool,
-	__fastcall,
-	void* ecx, void* edx)
+MAKE_SIGNATURE(CTFWeapon_ShouldDraw, "client.dll", "55 8B EC 83 EC 08 56 8B F1 57 8D 4E FC", 0x0);
+
+MAKE_HOOK(CTFWeapon_ShouldDraw, Signatures::CTFWeapon_ShouldDraw.Get(), bool, __fastcall,
+	void* ecx)
 {
 	if (const auto weapon = reinterpret_cast<C_TFWeaponBase*>(reinterpret_cast<uintptr_t>(ecx) - 4))
 	{
@@ -21,5 +19,5 @@ MAKE_HOOK(
 		}
 	}
 
-	return CALL_ORIGINAL(ecx, edx);
+	return CALL_ORIGINAL(ecx);
 }

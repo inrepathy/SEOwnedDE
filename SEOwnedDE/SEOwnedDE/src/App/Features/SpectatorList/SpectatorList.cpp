@@ -131,10 +131,12 @@ void CSpectatorList::Run()
 	{
 		const auto& spectator = m_vecSpectators[n];
 
+		const int iPos = int(n) + 1;
+
 		// Background
 		H::Draw->Rect(
 			CFG::Visuals_SpectatorList_Pos_X,
-			CFG::Visuals_SpectatorList_Pos_Y + (CFG::Menu_Drag_Bar_Height * (n + 1)) - 1,
+			CFG::Visuals_SpectatorList_Pos_Y + (CFG::Menu_Drag_Bar_Height * iPos) - 1,
 			LIST_WIDTH,
 			CFG::Menu_Drag_Bar_Height + 1,
 			bgColor
@@ -142,9 +144,9 @@ void CSpectatorList::Run()
 
 		const int nModeX = CFG::Visuals_SpectatorList_Pos_X;
 		const int nModeOffsetX = LIST_WIDTH / 8;
-		const int nTextY = CFG::Visuals_SpectatorList_Pos_Y + (CFG::Menu_Drag_Bar_Height * (n + 1)) - 1;
+		const int nTextY = CFG::Visuals_SpectatorList_Pos_Y + (CFG::Menu_Drag_Bar_Height * iPos) - 1;
 		const int nTextX = nModeX + nModeOffsetX + CFG::Menu_Spacing_X;
-		const int nY = CFG::Visuals_SpectatorList_Pos_Y + (CFG::Menu_Drag_Bar_Height * (n + 1)) - 1;
+		const int nY = CFG::Visuals_SpectatorList_Pos_Y + (CFG::Menu_Drag_Bar_Height * iPos) - 1;
 
 		// Divider
 		H::Draw->Line(nModeX + nModeOffsetX, nY, nModeX + nModeOffsetX, nY + CFG::Menu_Drag_Bar_Height, outlineColor);
@@ -177,7 +179,7 @@ void CSpectatorList::Run()
 		// Outline
 		H::Draw->OutlinedRect(
 			CFG::Visuals_SpectatorList_Pos_X,
-			CFG::Visuals_SpectatorList_Pos_Y + (CFG::Menu_Drag_Bar_Height * (n + 1)) - 1,
+			CFG::Visuals_SpectatorList_Pos_Y + (CFG::Menu_Drag_Bar_Height * iPos) - 1,
 			LIST_WIDTH,
 			CFG::Menu_Drag_Bar_Height + 1,
 			outlineColor

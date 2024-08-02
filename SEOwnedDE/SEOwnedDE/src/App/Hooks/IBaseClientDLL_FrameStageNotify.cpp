@@ -5,9 +5,8 @@
 #include "../Features/LagRecords/LagRecords.h"
 #include "../Features/MiscVisuals/MiscVisuals.h"
 
-MAKE_HOOK(
-	IBaseClientDLL_FrameStageNotify, Memory::GetVFunc(I::BaseClientDLL, 35),
-	void, __fastcall, void* ecx, ClientFrameStage_t curStage)
+MAKE_HOOK(IBaseClientDLL_FrameStageNotify, Memory::GetVFunc(I::BaseClientDLL, 35), void, __fastcall,
+	void* ecx, ClientFrameStage_t curStage)
 {
 	CALL_ORIGINAL(ecx, curStage);
 

@@ -468,20 +468,23 @@ bool CMenu::InputKey(const char *szLabel, int &nKeyOut)
 	if (!m_mapStates[&nKeyOut] && bHovered && H::Input->IsPressed(VK_LBUTTON) && !m_bClickConsumed)
 		m_mapStates[&nKeyOut] = m_bClickConsumed = true;
 
+	m_bInKeybind = false;
 	if (m_mapStates[&nKeyOut])
 	{
+		m_bInKeybind = true;
+
 		for (int n = 0; n < 256; n++)
 		{
 			bool bMouse = (n > 0x0 && n < 0x7);
 			bool bLetter = (n > L'A' - 1 && n < L'Z' + 1);
-			bool bAllowed = (n == VK_LSHIFT || n == VK_RSHIFT || n == VK_SHIFT || n == VK_ESCAPE || n == VK_INSERT || n == VK_MENU || n == VK_CAPITAL || n == VK_SPACE || n == VK_CONTROL);
+			bool bAllowed = (n == VK_LSHIFT || n == VK_RSHIFT || n == VK_SHIFT || n == VK_ESCAPE || n == VK_INSERT || n == VK_F3 || n == VK_MENU || n == VK_CAPITAL || n == VK_SPACE || n == VK_CONTROL);
 			bool bNumPad = n > (VK_NUMPAD0 - 1) && n < (VK_NUMPAD9)+1;
 
 			if (bMouse || bLetter || bAllowed || bNumPad)
 			{
 				if (H::Input->IsPressed(n))
 				{
-					if (n == VK_INSERT) {
+					if (n == VK_INSERT || n == VK_F3) {
 						m_mapStates[&nKeyOut] = false;
 						break;
 					}
@@ -705,13 +708,16 @@ bool CMenu::InputText(const char *szLabel, const char *szLabel2, std::string &st
 		strTemp.clear();
 	}
 
-	if (H::Input->IsPressed(VK_ESCAPE) || H::Input->IsPressed(VK_INSERT)) {
+	if (H::Input->IsPressed(VK_ESCAPE) || H::Input->IsPressed(VK_INSERT) || H::Input->IsPressed(VK_F3)) {
 		m_mapStates[&strOutput] = false;
 		strTemp.clear();
 	}
 
+	m_bWantTextInput = false;
 	if (m_mapStates[&strOutput])
 	{
+		m_bWantTextInput = true;
+
 		y += CFG::Menu_Spacing_Y;
 
 		int w = CFG::Menu_InputText_Width;
@@ -1024,7 +1030,7 @@ bool CMenu::ColorPicker(const char *szLabel, Color_t &colVar)
 		m_bClickConsumed = true;
 	}
 
-	if (H::Input->IsPressed(VK_ESCAPE) || H::Input->IsPressed(VK_INSERT))
+	if (H::Input->IsPressed(VK_ESCAPE) || H::Input->IsPressed(VK_INSERT) || H::Input->IsPressed(VK_F3))
 		m_mapStates[&colVar] = false;
 
 	H::Draw->Rect(x, y, w, h, colVar);
@@ -2624,7 +2630,7 @@ void CMenu::Run()
 		I::MatSystemSurface->DrawSetTextureRGBAEx(m_nColorPickerTextureId, reinterpret_cast<const unsigned char *>(m_pGradient.get()), 200, 200, IMAGE_FORMAT_RGBA8888);
 	}
 
-	if (H::Input->IsPressed(VK_INSERT))
+	if (H::Input->IsPressed(VK_INSERT) || H::Input->IsPressed(VK_F3))
 		I::MatSystemSurface->SetCursorAlwaysVisible(m_bOpen = !m_bOpen);
 
 	Indicators();
@@ -2638,6 +2644,135 @@ void CMenu::Run()
 		MainWindow();
 
 		H::LateRender->DrawAll();
+
+		//rare cat
+		{
+			static bool is_running{ false };
+			static float last_roll_time{ I::EngineClient->Time() };
+			static float progress{ -30.0f };
+
+			if (static_cast<int>(progress) > CFG::Menu_Width + 30)
+			{
+				is_running = false;
+				progress = -30.0f;
+			}
+
+			if (!is_running && I::EngineClient->Time() - last_roll_time > 1.0f)
+			{
+				last_roll_time = I::EngineClient->Time();
+
+				is_running = Utils::RandInt(0, 50) == 50;
+			}
+
+			if (is_running)
+			{
+				progress += 75.0f * I::GlobalVars->frametime;
+
+				static float flLastFrameUpdateTime = I::EngineClient->Time();
+
+				static int nFrame = 0;
+
+				if (I::EngineClient->Time() - flLastFrameUpdateTime > 0.08f)
+				{
+					flLastFrameUpdateTime = I::EngineClient->Time();
+
+					nFrame++;
+
+					if (nFrame > 7)
+					{
+						nFrame = 0;
+					}
+				}
+
+				H::Draw->StartClipping(CFG::Menu_Pos_X, 0, CFG::Menu_Width, H::Draw->GetScreenH());
+
+				int offset{ 0 };
+
+				if (nFrame == 1 || nFrame == 2 || nFrame == 3 || nFrame == 5 || nFrame == 6)
+				{
+					offset = 1;
+				}
+
+				//run test
+				H::Draw->Texture
+				(
+					CFG::Menu_Pos_X + static_cast<int>(progress),
+					CFG::Menu_Pos_Y - (13 + offset),
+					20,
+					13,
+					F::VisualUtils->GetCatRun(nFrame),
+					POS_DEFAULT
+				);
+
+				H::Draw->EndClipping();
+			}
+		}
+
+		//cats idle
+		{
+			//idle left
+			{
+				static float flLastFrameUpdateTime = I::EngineClient->Time();
+
+				static int nFrame = 0;
+
+				if (I::EngineClient->Time() - flLastFrameUpdateTime > 0.2f)
+				{
+					flLastFrameUpdateTime = I::EngineClient->Time();
+
+					nFrame++;
+
+					if (nFrame > 3)
+					{
+						nFrame = 0;
+					}
+				}
+
+				H::Draw->Texture(CFG::Menu_Pos_X + 5, CFG::Menu_Pos_Y - 12, 12, 12, F::VisualUtils->GetCat(nFrame), POS_DEFAULT);
+			}
+
+			//idle right
+			{
+				static float flLastFrameUpdateTime = I::EngineClient->Time();
+
+				static int nFrame = 0;
+
+				if (I::EngineClient->Time() - flLastFrameUpdateTime > 0.25f)
+				{
+					flLastFrameUpdateTime = I::EngineClient->Time();
+
+					nFrame++;
+
+					if (nFrame > 3)
+					{
+						nFrame = 0;
+					}
+				}
+
+				H::Draw->Texture(CFG::Menu_Pos_X + 5 + 40, CFG::Menu_Pos_Y - 12, 12, 12, F::VisualUtils->GetCat2(nFrame), POS_DEFAULT);
+			}
+
+			//sleep
+			{
+				static float flLastFrameUpdateTime = I::EngineClient->Time();
+
+				static int nFrame = 0;
+
+				if (I::EngineClient->Time() - flLastFrameUpdateTime > 0.3f)
+				{
+					flLastFrameUpdateTime = I::EngineClient->Time();
+
+					nFrame++;
+
+					if (nFrame > 3)
+					{
+						nFrame = 0;
+					}
+				}
+
+				H::Draw->Texture(CFG::Menu_Pos_X + 5 + 20, CFG::Menu_Pos_Y - 8, 12, 8, F::VisualUtils->GetCatSleep(nFrame), POS_DEFAULT);
+			}
+		}
 
 		Snow();
 	}

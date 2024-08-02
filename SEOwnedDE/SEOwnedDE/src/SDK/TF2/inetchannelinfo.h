@@ -6,20 +6,20 @@
 
 enum
 {
-	GENERIC = 0,
-	LOCALPLAYER,
-	OTHERPLAYERS,
-	ENTITIES,
-	SOUNDS,
-	EVENTS,
-	USERMESSAGES,
-	ENTMESSAGES,
-	VOICE,
-	STRINGTABLE,
-	CL_MOVE,
-	STRINGCMD,
-	SIGNON,
-	TOTAL
+	GENERIC = 0,	// must be first and is default group
+	LOCALPLAYER,	// bytes for local player entity update
+	OTHERPLAYERS,	// bytes for other players update
+	ENTITIES,		// all other entity bytes
+	SOUNDS,			// game sounds
+	EVENTS,			// event messages
+	USERMESSAGES,	// user messages
+	ENTMESSAGES,	// entity messages
+	VOICE,			// voice data
+	STRINGTABLE,	// a stringtable update
+	MOVE,			// client move cmds
+	STRINGCMD,		// string command
+	SIGNON,			// various signondata
+	TOTAL,			// must be last and is not a real group
 };
 
 class INetChannelInfo

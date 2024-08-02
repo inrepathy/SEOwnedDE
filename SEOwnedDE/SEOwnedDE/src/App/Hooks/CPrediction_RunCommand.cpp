@@ -2,9 +2,8 @@
 
 #include "../Features/CFG.h"
 
-MAKE_HOOK(
-	CPrediction_RunCommand, Memory::GetVFunc(I::Prediction, 17),
-	void, __fastcall, CPrediction* ecx, void* edx, C_BasePlayer* player, CUserCmd* pCmd, IMoveHelper* moveHelper)
+MAKE_HOOK(CPrediction_RunCommand, Memory::GetVFunc(I::Prediction, 17), void, __fastcall,
+	CPrediction* ecx, C_BasePlayer* player, CUserCmd* pCmd, IMoveHelper* moveHelper)
 {
 	if (Shifting::bRecharging)
 	{
@@ -15,9 +14,7 @@ MAKE_HOOK(
 		}
 	}
 
-	CALL_ORIGINAL(ecx, edx, player, pCmd, moveHelper);
-
-	I::MoveHelper = moveHelper;
+	CALL_ORIGINAL(ecx, player, pCmd, moveHelper);
 
 	if (const auto pLocal = H::Entities->GetLocal())
 	{

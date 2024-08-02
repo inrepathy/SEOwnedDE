@@ -4,8 +4,11 @@
 
 class CApp
 {
+	bool bUnload = false;
+
 public:
 	void Start();
+	void Loop();
 	void Shutdown();
 };
 

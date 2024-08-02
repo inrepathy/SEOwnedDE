@@ -13,6 +13,15 @@
 
 void CApp::Start()
 {
+	while (!Memory::FindSignature("client.dll", "48 8B 0D ? ? ? ? 48 8B 10 48 8B 19 48 8B C8 FF 92"))
+	{
+		bUnload = GetAsyncKeyState(VK_F11) & 0x8000;
+		if (bUnload)
+			return;
+
+		Sleep(500);
+	}
+
 	U::Storage->Init("SEOwnedDE");
 	U::SignatureManager->InitializeAllSignatures();
 	U::InterfaceManager->InitializeAllInterfaces();
@@ -58,36 +67,47 @@ void CApp::Start()
 
 		msgColor = { 28, 179, 210, 255 };
 	}
-	else
-	{
-		I::MatSystemSurface->PlaySound("vo\\items\\wheatley_sapper\\wheatley_sapper_hacked02.mp3");
-	}
 
 	I::CVar->ConsoleColorPrintf(msgColor, "SEOwnedDE Loaded!\n");
 }
 
+void CApp::Loop()
+{
+	while (true)
+	{
+		bool bShouldUnload = GetAsyncKeyState(VK_F11) & 0x8000 && SDKUtils::IsGameWindowInFocus() || bUnload;
+		if (bShouldUnload)
+			break;
+
+		Sleep(50);
+	}
+}
+
 void CApp::Shutdown()
 {
-	U::HookManager->FreeAllHooks();
-
-	Hooks::WINAPI_WndProc::Release();
-	
-	Sleep(250);
-
-	F::Materials->CleanUp();
-	F::Outlines->CleanUp();
-	F::Paint->CleanUp();
-
-	F::WorldModulation->RestoreWorldModulation();
-
-	if (const auto cl_wpn_sway_interp{ I::CVar->FindVar("cl_wpn_sway_interp") })
+	if (!bUnload)
 	{
-		cl_wpn_sway_interp->SetValue(0.0f);
-	}
+		U::HookManager->FreeAllHooks();
 
-	if (F::Menu->IsOpen())
-	{
-		I::MatSystemSurface->SetCursorAlwaysVisible(false);
+		Hooks::WINAPI_WndProc::Release();
+
+		Sleep(250);
+
+		F::Materials->CleanUp();
+		F::Outlines->CleanUp();
+		F::Paint->CleanUp();
+
+		F::WorldModulation->RestoreWorldModulation();
+
+		if (const auto cl_wpn_sway_interp{ I::CVar->FindVar("cl_wpn_sway_interp") })
+		{
+			cl_wpn_sway_interp->SetValue(0.0f);
+		}
+
+		if (F::Menu->IsOpen())
+		{
+			I::MatSystemSurface->SetCursorAlwaysVisible(false);
+		}
 	}
 	
 	I::CVar->ConsoleColorPrintf({ 255, 70, 70, 255 }, "SEOwnedDE Unloaded!\n");

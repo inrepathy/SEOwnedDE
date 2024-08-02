@@ -1,10 +1,11 @@
 #include "../../SDK/SDK.h"
 
-MAKE_HOOK(
-	C_BaseEntity_SetAbsVelocity, Signatures::C_BaseEntity_SetAbsVelocity.Get(),
-	void, __fastcall, C_BasePlayer* ecx, void* edx, const Vector& vecAbsVelocity)
+MAKE_SIGNATURE(CBasePlayer_PostDataUpdate_SetAbsVelocityCall, "client.dll", "E8 ? ? ? ? 0F 28 74 24 ? 8B D6", 0x5);
+
+MAKE_HOOK(CBaseEntity_SetAbsVelocity, Signatures::CBaseEntity_SetAbsVelocity.Get(), void, __fastcall,
+	C_BasePlayer* ecx, const Vector& vecAbsVelocity)
 {
-	if (reinterpret_cast<std::uintptr_t>(_ReturnAddress()) == Signatures::C_BasePlayer_PostDataUpdate_SetAbsVelocityCall.Get())
+	if (reinterpret_cast<std::uintptr_t>(_ReturnAddress()) == Signatures::CBasePlayer_PostDataUpdate_SetAbsVelocityCall.Get())
 	{
 		if (const auto pBasePlayer = ecx->As<C_TFPlayer>())
 		{
@@ -40,7 +41,7 @@ MAKE_HOOK(
 						{
 							Vec3 vNewVelocity = vecAbsVelocity;
 							vNewVelocity.z = (pBasePlayer->m_vecOrigin().z - vOldOrigin.z) / flSimTimeDelta;
-							CALL_ORIGINAL(ecx, edx, vNewVelocity);
+							CALL_ORIGINAL(ecx, vNewVelocity);
 							return;
 						}
 					}
@@ -49,5 +50,5 @@ MAKE_HOOK(
 		}
 	}
 
-	CALL_ORIGINAL(ecx, edx, vecAbsVelocity);
+	CALL_ORIGINAL(ecx, vecAbsVelocity);
 }

@@ -1,8 +1,9 @@
 #include "../../SDK/SDK.h"
 
-MAKE_HOOK(
-	CMultiPlayerAnimState_ResetGestureSlot, Signatures::CMultiPlayerAnimState_ResetGestureSlot.Get(),
-	void, __fastcall, CMultiPlayerAnimState* ecx, void* edx, int iGestureSlot)
+MAKE_SIGNATURE(CMultiPlayerAnimState_ResetGestureSlot, "client.dll", "55 8B EC 56 8B 75 08 57 56 8B F9 E8 ? ? ? ? 84 C0 74 43 C1 E6 04", 0x0);
+
+MAKE_HOOK(CMultiPlayerAnimState_ResetGestureSlot, Signatures::CMultiPlayerAnimState_ResetGestureSlot.Get(), void, __fastcall,
+	CMultiPlayerAnimState* ecx, int iGestureSlot)
 {
 	if (const auto pLocal = H::Entities->GetLocal())
 	{
@@ -15,5 +16,5 @@ MAKE_HOOK(
 		}
 	}
 
-	CALL_ORIGINAL(ecx, edx, iGestureSlot);
+	CALL_ORIGINAL(ecx, iGestureSlot);
 }

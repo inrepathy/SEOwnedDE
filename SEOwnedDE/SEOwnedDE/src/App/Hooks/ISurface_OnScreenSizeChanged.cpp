@@ -4,11 +4,10 @@
 #include "../Features/Outlines/Outlines.h"
 #include "../Features/Paint/Paint.h"
 
-MAKE_HOOK(
-	ISurface_OnScreenSizeChanged, Memory::GetVFunc(I::MatSystemSurface, 111),
-	void, __fastcall, ISurface* ecx, void* edx, int nOldWidth, int OldHeight)
+MAKE_HOOK(ISurface_OnScreenSizeChanged, Memory::GetVFunc(I::MatSystemSurface, 111), void, __fastcall,
+	ISurface* ecx, int nOldWidth, int OldHeight)
 {
-	CALL_ORIGINAL(ecx, edx, nOldWidth, OldHeight);
+	CALL_ORIGINAL(ecx, nOldWidth, OldHeight);
 
 	H::Fonts->Reload();
 	H::Draw->UpdateScreenSize();

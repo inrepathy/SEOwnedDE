@@ -2,9 +2,10 @@
 
 #include "../Features/CFG.h"
 
-MAKE_HOOK(
-	C_BaseEntity_AddVar, Signatures::C_BaseEntity_AddVar.Get(),
-	void, __fastcall, C_BaseEntity* ecx, void* edx, void* data, IInterpolatedVar* watcher, int type, bool bSetup)
+MAKE_SIGNATURE(CBaseEntity_AddVar, "client.dll", "55 8B EC 83 EC 0C 53 8B D9 56 33 F6 57 8B 4B 20 8B 7D 0C", 0x0);
+
+MAKE_HOOK(CBaseEntity_AddVar, Signatures::CBaseEntity_AddVar.Get(), void, __fastcall,
+	C_BaseEntity* ecx, void* data, IInterpolatedVar* watcher, int type, bool bSetup)
 {
 	if (CFG::Misc_Accuracy_Improvements && watcher)
 	{
@@ -29,12 +30,11 @@ MAKE_HOOK(
 		}
 	}
 
-	CALL_ORIGINAL(ecx, edx, data, watcher, type, bSetup);
+	CALL_ORIGINAL(ecx, data, watcher, type, bSetup);
 }
 
-MAKE_HOOK(
-	C_BaseEntity_EstimateAbsVelocity, Signatures::C_BaseEntity_EstimateAbsVelocity.Get(),
-	void, __fastcall, C_BaseEntity* ecx, void* edx, Vector& vel)
+MAKE_HOOK(CBaseEntity_EstimateAbsVelocity, Signatures::CBaseEntity_EstimateAbsVelocity.Get(), void, __fastcall,
+	C_BaseEntity* ecx, Vector& vel)
 {
 	if (CFG::Misc_Accuracy_Improvements && ecx)
 	{
@@ -48,5 +48,5 @@ MAKE_HOOK(
 		}
 	}
 
-	CALL_ORIGINAL(ecx, edx, vel);
+	CALL_ORIGINAL(ecx, vel);
 }

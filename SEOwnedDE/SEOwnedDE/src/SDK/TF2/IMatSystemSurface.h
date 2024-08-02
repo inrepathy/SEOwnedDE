@@ -1,6 +1,9 @@
 #pragma once
 #include "ISurface.h"
-#include "Signatures.h"
+#include "../../Utils/SignatureManager/SignatureManager.h"
+
+MAKE_SIGNATURE(CMatSystemSurface_StartDrawing, "vguimatsurface.dll", "40 53 56 57 48 83 EC ? 48 8B F9 80 3D", 0x0);
+MAKE_SIGNATURE(CMatSystemSurface_FinishDrawing, "vguimatsurface.dll", "40 53 48 83 EC ? 33 C9", 0x0);
 
 class VMatrix;
 class IMaterial;
@@ -42,11 +45,11 @@ public:
 	virtual void EndSkinCompositionPainting() = 0;
 
 	void StartDrawing() {
-		reinterpret_cast<void(__thiscall *)(void *)>(Signatures::CMatSystemSurface_StartDrawing.Get())(this);
+		reinterpret_cast<void(__fastcall *)(void *)>(Signatures::CMatSystemSurface_StartDrawing.Get())(this);
 	}
 
 	void FinishDrawing() {
-		reinterpret_cast<void(__thiscall *)(void *)>(Signatures::CMatSystemSurface_FinishDrawing.Get())(this);
+		reinterpret_cast<void(__fastcall *)(void *)>(Signatures::CMatSystemSurface_FinishDrawing.Get())(this);
 	}
 };
 

@@ -1,7 +1,7 @@
 #pragma once
 #include <stdint.h>
 #include "../../Utils/Color/Color.h"
-#include "Signatures.h"
+#include "../../Utils/SignatureManager/SignatureManager.h"
 
 enum types_t
 {

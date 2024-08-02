@@ -2,6 +2,13 @@
 #include "c_basecombatweapon.h"
 #include "c_baseplayer.h"
 
+MAKE_SIGNATURE(CTFWeaponBase_GetSpreadAngles, "client.dll", "48 89 5C 24 ? 48 89 74 24 ? 57 48 83 EC ? 0F 29 74 24 ? 48 8B DA 48 8B F9 E8 ? ? ? ? 48 8B C8", 0x0);
+MAKE_SIGNATURE(CTFWeaponBase_UpdateAllViewmodelAddons, "client.dll", "48 89 5C 24 ? 48 89 74 24 ? 57 48 83 EC ? 48 8B D9 E8 ? ? ? ? 48 8B F8", 0x0);
+MAKE_SIGNATURE(CTFWeaponBaseMelee_CalcIsAttackCriticalHelper, "client.dll", "40 57 48 83 EC ? 48 8B 05 ? ? ? ? 48 8B F9 83 78 ? ? 75", 0x0);
+MAKE_SIGNATURE(CTFWeaponBase_CalcIsAttackCriticalHelper, "client.dll", "48 89 5C 24 ? 55 56 57 48 81 EC ? ? ? ? 0F 29 74 24", 0x0);
+MAKE_SIGNATURE(CTFWeaponBase_GetAppropriateWorldOrViewModel, "client.dll", "48 89 5C 24 ? 57 48 83 EC ? 48 8B D9 E8 ? ? ? ? 48 8B C8 C7 44 24 ? ? ? ? ? 4C 8D 0D ? ? ? ? 33 D2 4C 8D 05 ? ? ? ? E8 ? ? ? ? 48 8B F8 48 85 C0 74 ? 48 8B CB", 0x0);
+MAKE_SIGNATURE(CTFWeaponBaseGun_GetWeaponSpread, "client.dll", "48 89 5C 24 ? 57 48 83 EC ? 4C 63 91", 0x0);
+
 class CHudTexture
 {
 public:
@@ -196,15 +203,15 @@ public:
 	NETVAR(m_iItemDefinitionIndex, int, "CEconEntity", "m_iItemDefinitionIndex");
 
 	int GetSlot() {
-		return reinterpret_cast<int(__thiscall *)(void *)>(Memory::GetVFunc(this, 330))(this);
+		return reinterpret_cast<int(__fastcall *)(void *)>(Memory::GetVFunc(this, 330))(this);
 	}
 
 	int GetWeaponID() {
-		return reinterpret_cast<int(__thiscall *)(void *)>(Memory::GetVFunc(this, 381))(this);
+		return reinterpret_cast<int(__fastcall *)(void *)>(Memory::GetVFunc(this, 381))(this);
 	}
 
 	int GetDamageType() {
-		return reinterpret_cast<int(__thiscall *)(void *)>(Memory::GetVFunc(this, 382))(this);
+		return reinterpret_cast<int(__fastcall *)(void *)>(Memory::GetVFunc(this, 382))(this);
 	}
 
 	float GetSwingRange() {
@@ -212,7 +219,7 @@ public:
 	}
 
 	float &m_flSmackTime() {
-		static int nOffset = NetVars::GetNetVar("CTFWeaponBase", "m_nInspectStage") + 0x1C;
+		static int nOffset = NetVars::GetNetVar("CTFWeaponBase", "m_nInspectStage") + 28;
 		return *reinterpret_cast<float *>(reinterpret_cast<std::uintptr_t>(this) + nOffset);
 	}
 
@@ -224,7 +231,7 @@ public:
 		{
 			int &iFOV = pOwner->m_iFOV(), nFovBackup = iFOV;
 			iFOV = 70;
-			bOut = reinterpret_cast<bool(__thiscall *)(void *, bool, void *)>(Memory::GetVFunc(this, 425))(this, bIsHeadshot, nullptr);
+			bOut = reinterpret_cast<bool(__fastcall *)(void *, bool, void *)>(Memory::GetVFunc(this, 425))(this, bIsHeadshot, nullptr);
 			iFOV = nFovBackup;
 		}
 
@@ -266,12 +273,12 @@ public:
 	}
 
 	CTFWeaponInfo *GetWeaponInfo() {
-		static int nOffset = NetVars::GetNetVar("CTFWeaponBase", "m_flEffectBarRegenTime") + 0x10;
+		static int nOffset = NetVars::GetNetVar("CTFWeaponBase", "m_flEffectBarRegenTime") + 16;
 		return *reinterpret_cast<CTFWeaponInfo **>(reinterpret_cast<std::uintptr_t>(this) + nOffset);
 	}
 	
 	bool IsEnergyWeapon() {
-		return reinterpret_cast<bool(__thiscall *)(void *)>(Memory::GetVFunc(this, 432))(this);
+		return reinterpret_cast<bool(__fastcall *)(void *)>(Memory::GetVFunc(this, 432))(this);
 	}
 
 	bool HasPrimaryAmmoForShot()
@@ -298,41 +305,42 @@ public:
 	}
 
 	int &m_iCurrentSeed() {
-		return *reinterpret_cast<int *>(reinterpret_cast<std::uintptr_t>(this) + 0xB5C);
+		static int nOffset = NetVars::GetNetVar("CTFWeaponBase", "m_flLastCritCheckTime") + 8;
+		return *reinterpret_cast<int *>(reinterpret_cast<std::uintptr_t>(this) + nOffset);
 	}
 
 	void GetProjectileFireSetup(void *pPlayer, Vector vecOffset, Vector *vecSrc, QAngle *angForward, bool bHitTeammates = true, float flEndDist = 2000.0f) {
-		using fn = void(__thiscall *)(C_TFWeaponBase *, void *, Vector, Vector *, QAngle *, bool, float);
+		using fn = void(__fastcall *)(C_TFWeaponBase *, void *, Vector, Vector *, QAngle *, bool, float);
 		reinterpret_cast<fn>(Memory::GetVFunc(this, 399))(this, pPlayer, vecOffset, vecSrc, angForward, bHitTeammates, flEndDist);
 	}
 
 	void GetSpreadAngles(Vec3 &out) {
-		reinterpret_cast<void(__thiscall *)(void *, Vec3 &)>(Signatures::CTFWeaponBase_GetSpreadAngles.Get())(this, out);
+		reinterpret_cast<void(__fastcall *)(void *, Vec3 &)>(Signatures::CTFWeaponBase_GetSpreadAngles.Get())(this, out);
 	}
 
 	void UpdateAllViewmodelAddons() {
-		return reinterpret_cast<void(__thiscall *)(void *)>(Signatures::CTFWeaponBase_UpdateAllViewmodelAddons.Get())(this);
+		return reinterpret_cast<void(__fastcall *)(void *)>(Signatures::CTFWeaponBase_UpdateAllViewmodelAddons.Get())(this);
 	}
 
 	float ApplyFireDelay(float flDelay) {
-		return reinterpret_cast<float(__thiscall *)(void *, float)>(Memory::GetVFunc(this, 407))(this, flDelay);
+		return reinterpret_cast<float(__fastcall *)(void *, float)>(Memory::GetVFunc(this, 407))(this, flDelay);
 	}
 
 	bool CalcIsAttackCriticalHelperMelee() {
-		return reinterpret_cast<bool(__thiscall *)(void *)>(Signatures::CTFWeaponBaseMelee_CalcIsAttackCriticalHelper.Get())(this);
+		return reinterpret_cast<bool(__fastcall *)(void *)>(Signatures::CTFWeaponBaseMelee_CalcIsAttackCriticalHelper.Get())(this);
 	}
 
 	bool CalcIsAttackCriticalHelper() {
-		return reinterpret_cast<bool(__fastcall *)(void *)>(Signatures::C_TFWeaponBase_CalcIsAttackCriticalHelper.Get())(this);
+		return reinterpret_cast<bool(__fastcall *)(void *)>(Signatures::CTFWeaponBase_CalcIsAttackCriticalHelper.Get())(this);
 	}
 
 	C_BaseAnimating *GetAppropriateWorldOrViewModel() {
-		return reinterpret_cast<C_BaseAnimating * (__thiscall *)(void *)>(Signatures::C_TFWeaponBase_GetAppropriateWorldOrViewModel.Get())(this);
+		return reinterpret_cast<C_BaseAnimating * (__fastcall *)(void *)>(Signatures::CTFWeaponBase_GetAppropriateWorldOrViewModel.Get())(this);
 	}
 
 	float GetWeaponSpread()
 	{
-		return reinterpret_cast<float(__thiscall *)(void *)>(Signatures::C_TFWeaponBaseGun_GetWeaponSpread.Get())(this);
+		return reinterpret_cast<float(__fastcall *)(void *)>(Signatures::CTFWeaponBaseGun_GetWeaponSpread.Get())(this);
 	}
 };
 

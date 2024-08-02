@@ -2,7 +2,10 @@
 
 #include "../CFG.h"
 
-MAKE_HOOK(CL_ReadPackets, Signatures::CL_ReadPackets.Get(), void, __cdecl, bool bFinalTick)
+MAKE_SIGNATURE(CL_ReadPackets, "engine.dll", "4C 8B DC 49 89 5B ? 55 56 57 41 54 41 55 41 56 41 57 48 83 EC ? 48 8B 05", 0x0);
+
+MAKE_HOOK(CL_ReadPackets, Signatures::CL_ReadPackets.Get(), void, __cdecl,
+	bool bFinalTick)
 {
 	if (!CFG::Misc_Ping_Reducer)
 	{

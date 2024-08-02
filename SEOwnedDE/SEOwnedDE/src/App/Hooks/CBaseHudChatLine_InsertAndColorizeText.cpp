@@ -3,13 +3,10 @@
 #include "../Features/CFG.h"
 #include "../Features/Players/Players.h"
 
-MAKE_HOOK(
-	CBaseHudChatLine_InsertAndColorizeText,
-	Signatures::CBaseHudChatLine_InsertAndColorizeText.Get(),
-	void,
-	__fastcall,
-	void* ecx, void* edx,
-	wchar_t* buf, int clientIndex)
+MAKE_SIGNATURE(CBaseHudChatLine_InsertAndColorizeText, "client.dll", "55 8B EC 83 EC 40 53 8B D9 56 57 89 5D D4", 0x0);
+
+MAKE_HOOK(CBaseHudChatLine_InsertAndColorizeText, Signatures::CBaseHudChatLine_InsertAndColorizeText.Get(), void, __fastcall,
+	void* ecx, wchar_t* buf, int clientIndex)
 {
 	if (CFG::Visuals_Chat_Name_Tags && ecx)
 	{
@@ -59,11 +56,11 @@ MAKE_HOOK(
 			str.insert(nameStart + nameLength, L"\x1");
 			str.insert(0, prefix);
 
-			CALL_ORIGINAL(ecx, edx, const_cast<wchar_t*>(str.c_str()), clientIndex);
+			CALL_ORIGINAL(ecx, const_cast<wchar_t*>(str.c_str()), clientIndex);
 
 			return;
 		}
 	}
 
-	CALL_ORIGINAL(ecx, edx, buf, clientIndex);
+	CALL_ORIGINAL(ecx, buf, clientIndex);
 }

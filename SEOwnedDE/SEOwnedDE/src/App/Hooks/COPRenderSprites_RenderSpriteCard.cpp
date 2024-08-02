@@ -2,6 +2,8 @@
 
 #include "../Features/CFG.h"
 
+MAKE_SIGNATURE(COPRenderSprites_RenderSpriteCard, "client.dll", "48 8B C4 48 89 58 ? 57 41 54", 0x0);
+
 union fltx4
 {
 	float m128_f32[4];
@@ -31,13 +33,12 @@ struct SpriteRenderInfo_t
 	void *m_pParticles{};
 };
 
-MAKE_HOOK(
-	C_OP_RenderSprites_RenderSpriteCard, Memory::RelToAbs(Signatures::C_OP_RenderSprites_RenderSpriteCard.Get()),
-	void, __fastcall, void* ecx, void* edx, void* meshBuilder, void* pCtx, SpriteRenderInfo_t& info, int hParticle, void* pSortList, void* pCamera)
+MAKE_HOOK(COPRenderSprites_RenderSpriteCard, Signatures::COPRenderSprites_RenderSpriteCard.Get(), void, __fastcall,
+	void* ecx, void* meshBuilder, void* pCtx, SpriteRenderInfo_t& info, int hParticle, void* pSortList, void* pCamera)
 {
 	if (CFG::Misc_Clean_Screenshot && I::EngineClient->IsTakingScreenshot())
 	{
-		CALL_ORIGINAL(ecx, edx, meshBuilder, pCtx, info, hParticle, pSortList, pCamera);;
+		CALL_ORIGINAL(ecx, meshBuilder, pCtx, info, hParticle, pSortList, pCamera);;
 		return;
 	}
 
@@ -67,5 +68,5 @@ MAKE_HOOK(
 		info.m_pRGB[((hParticle / 4) * info.m_nRGBStride) + 2].m128_f32[hParticle & 0x3] = ColorUtils::ToFloat(color.b);
 	}
 
-	CALL_ORIGINAL(ecx, edx, meshBuilder, pCtx, info, hParticle, pSortList, pCamera);
+	CALL_ORIGINAL(ecx, meshBuilder, pCtx, info, hParticle, pSortList, pCamera);
 }

@@ -2,9 +2,10 @@
 
 #include "../Features/CFG.h"
 
-MAKE_HOOK(
-	CTFPlayer_FireBullet, Signatures::CTFPlayer_FireBullet.Get(),
-	void, __fastcall, C_TFPlayer* ecx, void* edx, C_TFWeaponBase* pWpn, FireBulletsInfo_t& info, bool bDoEffects, int nDamageType, int nCustomDamageType)
+MAKE_SIGNATURE(CTFPlayer_FireBullet, "client.dll", "48 89 74 24 ? 55 57 41 55 41 56 41 57 48 8D AC 24 ? ? ? ? 48 81 EC ? ? ? ? F3 41 0F 10 58", 0x0);
+
+MAKE_HOOK(CTFPlayer_FireBullet, Signatures::CTFPlayer_FireBullet.Get(), void, __fastcall,
+	C_TFPlayer* ecx, C_TFWeaponBase* pWpn, FireBulletsInfo_t& info, bool bDoEffects, int nDamageType, int nCustomDamageType)
 {
 	if (auto pLocal = H::Entities->GetLocal())
 	{
@@ -88,5 +89,5 @@ MAKE_HOOK(
 		}
 	}
 
-	CALL_ORIGINAL(ecx, edx, pWpn, info, bDoEffects, nDamageType, nCustomDamageType);
+	CALL_ORIGINAL(ecx, pWpn, info, bDoEffects, nDamageType, nCustomDamageType);
 }

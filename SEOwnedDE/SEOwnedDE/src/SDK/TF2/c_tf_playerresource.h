@@ -99,9 +99,13 @@ public:
 
 //ADD_INTERFACE_SIGNATURE(C_TF_PlayerResource, TF_PR, "client.dll", "8B 0D ? ? ? ? 6A 01 FF B6 ? ? ? ? E8 ? ? ? ? 8B 17 8B CF 8B F0 FF 92 ? ? ? ? 33 C9", 2, 2)
 
+MAKE_SIGNATURE(Get_PlayerResource, "client.dll", "48 8B 0D ? ? ? ? E8 ? ? ? ? 49 8B 16", 0x0);
+
 static C_TF_PlayerResource *GetTFPlayerResource()
 {
-	static auto dwPlayerResource = Memory::RelToAbs(Memory::FindSignature("client.dll", "48 8B 0D ? ? ? ? E8 ? ? ? ? 49 8B 16"));
-	//Assert(dwPlayerResource == 0x0);
+	static auto dwPlayerResource = Memory::RelToAbs(Signatures::Get_PlayerResource.Get());
+
+	//Assert(dwPlayerResource);
+	
 	return *reinterpret_cast<C_TF_PlayerResource **>(dwPlayerResource);
 }

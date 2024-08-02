@@ -114,7 +114,7 @@ void CDraw::String(const CFont &font, int x, int y, Color_t clr, short pos, cons
 	I::MatSystemSurface->DrawSetTextPos(x, y);
 	I::MatSystemSurface->DrawSetTextFont(font.m_dwFont);
 	I::MatSystemSurface->DrawSetTextColor(clr.r, clr.g, clr.b, clr.a);
-	I::MatSystemSurface->DrawPrintText(wstr, wcslen(wstr));
+	I::MatSystemSurface->DrawPrintText(wstr, int(wcslen(wstr)));
 }
 
 void CDraw::String(const CFont &font, int x, int y, Color_t clr, short pos, const wchar_t *str, ...)
@@ -143,7 +143,7 @@ void CDraw::String(const CFont &font, int x, int y, Color_t clr, short pos, cons
 	I::MatSystemSurface->DrawSetTextPos(x, y);
 	I::MatSystemSurface->DrawSetTextFont(font.m_dwFont);
 	I::MatSystemSurface->DrawSetTextColor(clr.r, clr.g, clr.b, clr.a);
-	I::MatSystemSurface->DrawPrintText(wstr, wcslen(wstr));
+	I::MatSystemSurface->DrawPrintText(wstr, int(wcslen(wstr)));
 }
 
 void CDraw::Line(int x, int y, int x1, int y1, Color_t clr)

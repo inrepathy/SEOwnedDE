@@ -2,8 +2,14 @@
 #include "c_baseplayer.h"
 #include "tf_weaponbase.h"
 #include "../TF2/icliententitylist.h"
-#include "Signatures.h"
+#include "../../Utils/SignatureManager/SignatureManager.h"
 #include "multiplayer_animstate.h"
+
+MAKE_SIGNATURE(CTFPlayer_IsPlayerOnSteamFriendsList, "client.dll", "40 57 48 81 EC ? ? ? ? 48 8B FA E8", 0x0);
+MAKE_SIGNATURE(TeamFortress_CalculateMaxSpeed, "client.dll", "88 54 24 ? 53 55", 0x0);
+MAKE_SIGNATURE(CTFPlayer_UpdateClientSideAnimation, "client.dll", "48 89 5C 24 ? 57 48 83 EC ? 48 8B D9 E8 ? ? ? ? 48 8B F8 48 85 C0 74 ? 48 8B 00 48 8B CF FF 90 ? ? ? ? 84 C0 75 ? 33 FF 48 3B DF", 0x0);
+MAKE_SIGNATURE(CTFPlayer_UpdateWearables, "client.dll", "40 53 48 83 EC ? 48 8B D9 E8 ? ? ? ? 48 8B 03 48 8B CB FF 90 ? ? ? ? 4C 8D 0D ? ? ? ? C7 44 24 ? ? ? ? ? 48 8B C8 4C 8D 05 ? ? ? ? 33 D2 E8 ? ? ? ? 48 85 C0", 0x0);
+MAKE_SIGNATURE(CTFPlayer_ThirdPersonSwitch, "client.dll", "48 83 EC ? 48 8B 01 48 89 5C 24 ? 48 8B D9 48 89 7C 24", 0x0);
 
 class C_TFPlayer : public C_BasePlayer
 {
@@ -177,8 +183,9 @@ public:
 	NETVAR(m_iPlayerSkinOverride, int, "CTFPlayer", "m_iPlayerSkinOverride");
 	NETVAR(m_bViewingCYOAPDA, bool, "CTFPlayer", "m_bViewingCYOAPDA");
 
-	int GetMoveType() {
-		return *reinterpret_cast<int *>(reinterpret_cast<std::uintptr_t>(this) + 420);
+	byte GetMoveType() {
+		static int nOffset = NetVars::GetNetVar("CTFPlayer", "m_nWaterLevel") - 4;
+		return *reinterpret_cast<byte *>(reinterpret_cast<std::uintptr_t>(this) + nOffset);
 	}
 
 	Vec3 GetEyeAngles() {
@@ -186,7 +193,7 @@ public:
 	}
 
 	int GetMaxHealth() {
-		return reinterpret_cast<int(__thiscall *)(void *)>(Memory::GetVFunc(this, 107))(this);
+		return reinterpret_cast<int(__fastcall *)(void *)>(Memory::GetVFunc(this, 107))(this);
 	}
 
 	Vec3 GetShootPos() {
@@ -326,7 +333,7 @@ public:
 
 	C_TFWeaponBase *GetWeaponFromSlot(int nSlot) {
 		static int nOffset = NetVars::GetNetVar("CBaseCombatCharacter", "m_hMyWeapons");
-		int hWeapon = *reinterpret_cast<int *>(reinterpret_cast<std::uintptr_t>(this) + (nOffset + (nSlot * 0x4)));
+		int hWeapon = *reinterpret_cast<int *>(reinterpret_cast<std::uintptr_t>(this) + nOffset + nSlot * 0x4);
 		return reinterpret_cast<C_TFWeaponBase *>(I::ClientEntityList->GetClientEntityFromHandle(hWeapon));
 	}
 
@@ -356,13 +363,13 @@ public:
 
 	CMultiPlayerAnimState *GetAnimState()
 	{
-		static auto offset{ NetVars::GetNetVar("CTFPlayer", "m_hItem") - /*52*/ 104 };
+		static int nOffset = NetVars::GetNetVar("CTFPlayer", "m_hItem") - 88;
 
-		return *reinterpret_cast<CMultiPlayerAnimState **>(reinterpret_cast<std::uintptr_t>(this) + offset);
+		return *reinterpret_cast<CMultiPlayerAnimState **>(reinterpret_cast<std::uintptr_t>(this) + nOffset);
 	}
 
 	void UpdateClientSideAnimation() {
-		reinterpret_cast<void(__fastcall *)(void *)>(Signatures::C_TFPlayer_UpdateClientSideAnimation.Get())(this);
+		reinterpret_cast<void(__fastcall *)(void *)>(Signatures::CTFPlayer_UpdateClientSideAnimation.Get())(this);
 	}
 
 	float GetCritMult()
@@ -372,12 +379,12 @@ public:
 
 	void UpdateWearables()
 	{
-		reinterpret_cast<void(__thiscall *)(void *)>(Signatures::C_TFPlayer_UpdateWearables.Get())(this);
+		reinterpret_cast<void(__fastcall *)(void *)>(Signatures::CTFPlayer_UpdateWearables.Get())(this);
 	}
 
 	void ThirdPersonSwitch()
 	{
-		reinterpret_cast<void(__thiscall *)(C_TFPlayer *)>(Memory::RelToAbs(Signatures::C_TFPlayer_ThirdPersonSwitch.Get()))(this);
+		reinterpret_cast<void(__fastcall *)(C_TFPlayer *)>(Signatures::CTFPlayer_ThirdPersonSwitch.Get())(this);
 	}
 };
 

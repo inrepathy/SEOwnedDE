@@ -2,17 +2,9 @@
 
 DWORD WINAPI MainThread(LPVOID lpParam)
 {
-	while (!GetModuleHandleA("XAudio2_7.dll"))
-	{
-		Sleep(500);
-	}
-
 	App->Start();
 
-	while (!GetAsyncKeyState(VK_F11))
-	{
-		Sleep(500);
-	}
+	App->Loop();
 
 	App->Shutdown();
 

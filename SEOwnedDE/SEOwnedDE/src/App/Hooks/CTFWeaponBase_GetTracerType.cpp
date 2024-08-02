@@ -2,9 +2,10 @@
 
 #include "../Features/CFG.h"
 
-MAKE_HOOK(
-	CTFWeaponBase_GetTracerType, Signatures::CTFWeaponBase_GetTracerType.Get(),
-	const char*, __fastcall, C_TFWeaponBase* ecx, void* edx)
+MAKE_SIGNATURE(CTFWeaponBase_GetTracerType, "client.dll", "55 8B EC 51 53 56 57 8B F9 E8 ? ? ? ? 6A 00", 0x0);
+
+MAKE_HOOK(CTFWeaponBase_GetTracerType, Signatures::CTFWeaponBase_GetTracerType.Get(), const char*, __fastcall,
+	C_TFWeaponBase* ecx)
 {
 	if (const auto nType = CFG::Visuals_Tracer_Type)
 	{
@@ -24,7 +25,7 @@ MAKE_HOOK(
 							case 4: return pLocal->m_iTeamNum() == 2 ? "bullet_bignasty_tracer01_red" : "bullet_bignasty_tracer01_blue";
 							case 5: return pLocal->m_iTeamNum() == 2 ? "dxhr_lightningball_hit_zap_red" : "dxhr_lightningball_hit_zap_blue";
 							case 6: return "merasmus_zap";
-							default: return CALL_ORIGINAL(ecx, edx);
+							default: return CALL_ORIGINAL(ecx);
 						}
 					};
 
@@ -37,5 +38,5 @@ MAKE_HOOK(
 		}
 	}
 
-	return CALL_ORIGINAL(ecx, edx);
+	return CALL_ORIGINAL(ecx);
 }

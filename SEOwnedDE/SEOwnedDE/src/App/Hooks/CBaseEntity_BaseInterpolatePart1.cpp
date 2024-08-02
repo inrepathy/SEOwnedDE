@@ -2,9 +2,10 @@
 
 #include "../Features/CFG.h"
 
-MAKE_HOOK(
-	CBaseEntity_BaseInterpolatePart1, Memory::RelToAbs(Signatures::CBaseEntity_BaseInterpolatePart1.Get()),
-	int, __fastcall, void* ecx, void* edx, float& currentTime, Vector& oldOrigin, QAngle& oldAngles, Vector& oldVel, int& bNoMoreChanges)
+MAKE_SIGNATURE(CBaseEntity_BaseInterpolatePart1, "client.dll", "E8 ? ? ? ? 83 7D FC 00 8B D8", 0x0);
+
+MAKE_HOOK(CBaseEntity_BaseInterpolatePart1, Memory::RelToAbs(Signatures::CBaseEntity_BaseInterpolatePart1.Get()), int, __fastcall,
+	void* ecx, float& currentTime, Vector& oldOrigin, QAngle& oldAngles, Vector& oldVel, int& bNoMoreChanges)
 {
 	auto shouldDisableInterp = [&]
 	{
@@ -54,5 +55,5 @@ MAKE_HOOK(
 		return 0;
 	}
 
-	return CALL_ORIGINAL(ecx, edx, currentTime, oldOrigin, oldAngles, oldVel, bNoMoreChanges);
+	return CALL_ORIGINAL(ecx, currentTime, oldOrigin, oldAngles, oldVel, bNoMoreChanges);
 }

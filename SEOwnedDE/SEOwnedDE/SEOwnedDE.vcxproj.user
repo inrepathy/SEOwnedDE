@@ -19,7 +19,7 @@
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <LocalDebuggerCommand>E:\Games\steamapps\common\Team Fortress 2\tf_win64.exe</LocalDebuggerCommand>
+    <LocalDebuggerCommand>C:\Program Files %28x86%29\Steam\steamapps\common\Team Fortress 2\tf_win64.exe</LocalDebuggerCommand>
     <LocalDebuggerAttach>true</LocalDebuggerAttach>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
   </PropertyGroup>

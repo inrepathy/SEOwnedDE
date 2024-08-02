@@ -2,6 +2,7 @@
 #include "../Memory/Memory.h"
 #include "../Assert/Assert.h"
 #include <string>
+#include <format>
 
 CSignature::CSignature(const char *sDLLName, const char *sSignature, int nOffset, const char *sName)
 {
@@ -17,7 +18,7 @@ void CSignature::Initialize()
 {
 	m_dwVal = Memory::FindSignature(m_pszDLLName, m_pszSignature);
 
-	//AssertCustom(!m_dwVal, std::string("CSignature::Initialize() Failed to initialize (" + std::string(m_pszName) + ")").c_str());
+	AssertCustom(m_dwVal, std::format("CSignature::Initialize() failed to initialize:\n  {}\n  {}\n  {}\n", m_pszName, m_pszDLLName, m_pszSignature).c_str());
 
 	m_dwVal += m_nOffset;
 }

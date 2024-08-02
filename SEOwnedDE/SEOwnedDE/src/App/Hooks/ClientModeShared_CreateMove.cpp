@@ -12,9 +12,8 @@
 #include "../Features/StickyJump/StickyJump.h"
 #include "../Features/Crits/Crits.h"
 
-MAKE_HOOK(
-	ClientModeShared_CreateMove, Memory::GetVFunc(I::ClientModeShared, 21),
-	bool, __fastcall, CClientModeShared* ecx, float flInputSampleTime, CUserCmd* pCmd)
+MAKE_HOOK(ClientModeShared_CreateMove, Memory::GetVFunc(I::ClientModeShared, 21), bool, __fastcall,
+	CClientModeShared* ecx, float flInputSampleTime, CUserCmd* pCmd)
 {
 	G::bSilentAngles = false;
 	G::bPSilentAngles = false;
@@ -52,8 +51,7 @@ MAKE_HOOK(
 		return CALL_ORIGINAL(ecx, flInputSampleTime, pCmd);
 	}
 
-	const auto ebp = *reinterpret_cast< std::uintptr_t* >( reinterpret_cast< std::uintptr_t >( _AddressOfReturnAddress( ) ) - sizeof( std::uintptr_t* ) );
-	bool* pSendPacket = reinterpret_cast< bool* >( ebp - 0x1C );
+	bool* pSendPacket = reinterpret_cast<bool*>(uintptr_t(_AddressOfReturnAddress()) + 0x128);
 
 	Vec3 vOldAngles = pCmd->viewangles;
 	float flOldSide = pCmd->sidemove;

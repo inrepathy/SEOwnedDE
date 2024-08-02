@@ -5,8 +5,15 @@
 #include "const.h"
 #include "tf_shareddefs.h"
 #include "icliententitylist.h"
-#include "Signatures.h"
+#include "../../Utils/SignatureManager/SignatureManager.h"
 #include "NetVars/NetVars.h"
+
+MAKE_SIGNATURE(CBaseEntity_SetAbsOrigin, "client.dll", "48 89 5C 24 ? 57 48 83 EC ? 48 8B FA 48 8B D9 E8 ? ? ? ? F3 0F 10 83", 0x0);
+MAKE_SIGNATURE(CBaseEntity_SetAbsAngles, "client.dll", "48 89 5C 24 ? 57 48 81 EC ? ? ? ? 48 8B FA 48 8B D9 E8 ? ? ? ? F3 0F 10 83", 0x0);
+MAKE_SIGNATURE(CBaseEntity_SetAbsVelocity, "client.dll", "48 89 5C 24 ? 57 48 83 EC ? F3 0F 10 81 ? ? ? ? 48 8B DA 0F 2E 02", 0x0);
+MAKE_SIGNATURE(CBaseEntity_EstimateAbsVelocity, "client.dll", "48 89 5C 24 ? 57 48 83 EC ? 48 8B FA 48 8B D9 E8 ? ? ? ? 48 3B D8", 0x0);
+MAKE_SIGNATURE(CBaseEntity_CreateShadow, "client.dll", "48 89 5C 24 ? 57 48 83 EC ? 48 8B 41 ? 48 8B F9 48 83 C1 ? FF 90", 0x0);
+MAKE_SIGNATURE(CBaseEntity_InvalidateBoneCache, "client.dll", "8B 05 ? ? ? ? FF C8 C7 81", 0x0);
 
 enum CollideType_t
 {
@@ -162,7 +169,7 @@ public:
 	}
 
 	void UpdateVisibility() {
-		reinterpret_cast<void(__thiscall *)(C_BaseEntity *)>(Memory::GetVFunc(this, 91))(this);
+		reinterpret_cast<void(__fastcall *)(C_BaseEntity *)>(Memory::GetVFunc(this, 91))(this);
 	}
 
 	unsigned char &m_MoveType() {
@@ -191,27 +198,27 @@ public:
 	}
 
 	void SetAbsOrigin(const Vec3 &absOrigin) {
-		reinterpret_cast<void(__fastcall *)(void *, const Vec3 &)>(Signatures::C_BaseEntity_SetAbsOrigin.Get())(this, absOrigin);
+		reinterpret_cast<void(__fastcall *)(void *, const Vec3 &)>(Signatures::CBaseEntity_SetAbsOrigin.Get())(this, absOrigin);
 	}
 
 	void SetAbsAngles(const Vec3 &absAngles) {
-		reinterpret_cast<void(__fastcall *)(void *, const Vec3 &)>(Signatures::C_BaseEntity_SetAbsAngles.Get())(this, absAngles);
+		reinterpret_cast<void(__fastcall *)(void *, const Vec3 &)>(Signatures::CBaseEntity_SetAbsAngles.Get())(this, absAngles);
 	}
 
 	void SetAbsVelocity(const Vector &vecAbsVelocity) {
-		reinterpret_cast<void(__thiscall *)(void *, const Vec3 &)>(Signatures::C_BaseEntity_SetAbsVelocity.Get())(this, vecAbsVelocity);
+		reinterpret_cast<void(__fastcall *)(void *, const Vec3 &)>(Signatures::CBaseEntity_SetAbsVelocity.Get())(this, vecAbsVelocity);
 	}
 
 	void EstimateAbsVelocity(Vector &vel) {
-		reinterpret_cast<void(__thiscall *)(void *, Vector &)>(Signatures::C_BaseEntity_EstimateAbsVelocity.Get())(this, vel);
+		reinterpret_cast<void(__fastcall *)(void *, Vector &)>(Signatures::CBaseEntity_EstimateAbsVelocity.Get())(this, vel);
 	}
 
 	void CreateShadow() {
-		reinterpret_cast<void(__thiscall *)(void *)>(Signatures::C_BaseEntity_CreateShadow.Get())(this);
+		reinterpret_cast<void(__fastcall *)(void *)>(Signatures::CBaseEntity_CreateShadow.Get())(this);
 	}
 
 	void InvalidateBoneCache()
 	{
-		reinterpret_cast<void(__fastcall *)(void *)>(Signatures::C_BaseEntity_InvalidateBoneCache.Get())(this);
+		reinterpret_cast<void(__fastcall *)(void *)>(Signatures::CBaseEntity_InvalidateBoneCache.Get())(this);
 	}
 };

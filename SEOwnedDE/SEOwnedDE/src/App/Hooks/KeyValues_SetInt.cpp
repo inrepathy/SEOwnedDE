@@ -2,11 +2,14 @@
 
 #include "../Features/CFG.h"
 
-MAKE_HOOK(
-	KeyValues_SetInt, Signatures::KeyValues_SetInt.Get(),
-	void, __fastcall, KeyValues* ecx, void* edx, const char* keyName, int value)
+MAKE_SIGNATURE(KeyValues_SetInt, "client.dll", "40 53 48 83 EC ? 41 8B D8 41 B0", 0x0);
+MAKE_SIGNATURE(RevealScoreboard_KeyValues_SetInt_Desired, "client.dll", "49 8B 06 4C 8B C3 8B D7", 0x0);
+MAKE_SIGNATURE(RevealScoreboard_KeyValues_SetInt_Jump, "client.dll", "8B F0 E8 ? ? ? ? 3B C7", 0x0);
+
+MAKE_HOOK(KeyValues_SetInt, Signatures::KeyValues_SetInt.Get(), void, __fastcall,
+	KeyValues* ecx, const char* keyName, int value)
 {
-	CALL_ORIGINAL(ecx, edx, keyName, value);
+	CALL_ORIGINAL(ecx, keyName, value);
 
 	if (CFG::Visuals_Reveal_Scoreboard)
 	{

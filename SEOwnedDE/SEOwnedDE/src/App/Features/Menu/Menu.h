@@ -42,6 +42,9 @@ public:
 	inline bool IsOpen() { return m_bOpen; }
 	inline bool IsMenuWindowHovered() { return m_bMenuWindowHovered; }
 
+	bool m_bWantTextInput = false;
+	bool m_bInKeybind = false;
+
 private:
 	void MainWindow();
 	void Snow();

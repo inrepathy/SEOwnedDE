@@ -2,11 +2,14 @@
 
 #include "../Features/CFG.h"
 
-MAKE_HOOK(
-	CTFPlayerShared_IsPlayerDominated, Signatures::CTFPlayerShared_IsPlayerDominated.Get(),
-	bool, __fastcall, void* ecx, void* edx, int index)
+MAKE_SIGNATURE(CTFPlayerShared_IsPlayerDominated, "client.dll", "48 89 5C 24 ? 48 89 74 24 ? 57 48 83 EC ? 48 63 F2 48 8B D9 E8", 0x0);
+MAKE_SIGNATURE(RevealScoreboard_CTFPlayerShared_IsPlayerDominated_Desired, "client.dll", "84 C0 74 ? 40 84 ED 74 ? 45 8B 86", 0x0);
+MAKE_SIGNATURE(RevealScoreboard_CTFPlayerShared_IsPlayerDominated_Jump, "client.dll", "8B F0 E8 ? ? ? ? 3B C7", 0x0);
+
+MAKE_HOOK(CTFPlayerShared_IsPlayerDominated, Signatures::CTFPlayerShared_IsPlayerDominated.Get(), bool, __fastcall,
+	void* ecx, int index)
 {
-	const bool bResult = CALL_ORIGINAL(ecx, edx, index);
+	const bool bResult = CALL_ORIGINAL(ecx, index);
 
 	if (!bResult)
 	{

@@ -2,16 +2,44 @@
 
 #include "../Features/CFG.h"
 #include "../Features/NetworkFix/NetworkFix.h"
+#include "../Features/SeedPred/SeedPred.h"
 
-MAKE_HOOK(
-	CL_Move, Signatures::CL_Move.Get(),
-	void, __cdecl, float accumulated_extra_samples, bool bFinalTick)
+MAKE_SIGNATURE(CL_Move, "engine.dll", "40 55 53 48 8D AC 24 ? ? ? ? B8 ? ? ? ? E8 ? ? ? ? 48 2B E0 83 3D", 0x0);
+
+MAKE_HOOK(CL_Move, Signatures::CL_Move.Get(), void, __fastcall,
+	float accumulated_extra_samples, bool bFinalTick)
 {
 	auto callOriginal = [&](bool bFinal)
 	{
 		if (CFG::Misc_Ping_Reducer)
 		{
 			F::NetworkFix->FixInputDelay(bFinal);
+		}
+
+		F::SeedPred->AskForPlayerPerf();
+
+		if (Shifting::nAvailableTicks < MAX_COMMANDS)
+		{
+			if (H::Entities->GetWeapon())
+			{
+				if (!Shifting::bRecharging && !Shifting::bShifting && !Shifting::bShiftingWarp)
+				{
+					if (H::Input->IsDown(CFG::Exploits_Shifting_Recharge_Key))
+					{
+						Shifting::bRecharging = !I::MatSystemSurface->IsCursorVisible() && !I::EngineVGui->IsGameUIVisible();
+					}
+				}
+			}
+
+			if (Shifting::bRecharging)
+			{
+				Shifting::nAvailableTicks++;
+				return;
+			}
+		}
+		else
+		{
+			Shifting::bRecharging = false;
 		}
 
 		CALL_ORIGINAL(accumulated_extra_samples, bFinal);

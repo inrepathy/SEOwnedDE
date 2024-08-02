@@ -16,7 +16,6 @@ void CMiscVisuals::AimbotFOVCircle()
 
 	if (!CFG::Visuals_Aimbot_FOV_Circle
 		|| I::EngineVGui->IsGameUIVisible()
-		|| !G::CHudTFCrosshair_ShouldDraw_Result
 		|| I::Input->CAM_IsThirdPerson())
 		return;
 
@@ -81,7 +80,7 @@ void CMiscVisuals::ShiftBar()
 		return;
 	}
 
-	if (I::EngineVGui->IsGameUIVisible() || !G::CHudTFCrosshair_ShouldDraw_Result || SDKUtils::BInEndOfMatch())
+	if (I::EngineVGui->IsGameUIVisible() || SDKUtils::BInEndOfMatch())
 		return;
 
 	const auto pLocal = H::Entities->GetLocal();
@@ -264,7 +263,7 @@ void CMiscVisuals::ProjectileArc()
 		return;
 	}
 
-	if (!CFG::Visuals_Draw_Projectile_Arc || !G::CHudTFCrosshair_ShouldDraw_Result)
+	if (!CFG::Visuals_Draw_Projectile_Arc)
 	{
 		return;
 	}

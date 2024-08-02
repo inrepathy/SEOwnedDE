@@ -1,8 +1,11 @@
 #pragma once
 
 #include "IEngineTrace.h"
-#include "Signatures.h"
+#include "../../Utils/SignatureManager/SignatureManager.h"
 #include "IAppSystem.h"
+
+MAKE_SIGNATURE(CreatePhysicsObject, "vphysics.dll", "55 8B EC 81 EC ? ? ? ? 83 7D 10 00", 0x0); // update me
+MAKE_SIGNATURE(CPhysicsObject_RecomputeDragBases, "vphysics.dll", "55 8B EC 83 EC 38 57 8B F9 8B 07 8B 40 04 FF D0", 0x0); // update me
 
 using AngularImpulse = Vec3;
 
@@ -211,7 +214,7 @@ public:
 
 	void RecomputeDragBases()
 	{
-		return reinterpret_cast<void(__thiscall *)(void *)>(Signatures::CPhysicsObject_RecomputeDragBases.Get())(this);
+		return reinterpret_cast<void(__fastcall *)(void *)>(Signatures::CPhysicsObject_RecomputeDragBases.Get())(this);
 	}
 };
 

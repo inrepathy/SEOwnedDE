@@ -245,7 +245,7 @@ void CMovementSimulation::SetupMoveData(C_TFPlayer* pPlayer, CMoveData* pMoveDat
 
 bool CMovementSimulation::Initialize(C_TFPlayer* pPlayer)
 {
-	if (!I::TFGameMovement || !pPlayer || pPlayer->deadflag())
+	if (!pPlayer || pPlayer->deadflag())
 		return false;
 
 	//set player
@@ -325,7 +325,7 @@ void CMovementSimulation::Restore()
 
 void CMovementSimulation::RunTick(float flTimeToTarget)
 {
-	if (!I::TFGameMovement || !m_pPlayer)
+	if (!m_pPlayer)
 	{
 		return;
 	}
@@ -352,7 +352,7 @@ void CMovementSimulation::RunTick(float flTimeToTarget)
 
 	m_bRunning = true;
 
-	I::TFGameMovement->ProcessMovement(m_pPlayer, &m_MoveData);
+	I::GameMovement->ProcessMovement(m_pPlayer, &m_MoveData);
 
 	m_bRunning = false;
 }

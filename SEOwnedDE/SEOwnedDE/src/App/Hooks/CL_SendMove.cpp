@@ -3,9 +3,10 @@
 #include "../Features/CFG.h"
 #include "../Features/SeedPred/SeedPred.h"
 
-MAKE_HOOK(
-	CL_SendMove, Signatures::CL_SendMove.Get(),
-	void, __fastcall, void* ecx, void* edx)
+// does not exist anymore, inlined; reimplement features elsewhere
+
+MAKE_HOOK(CL_SendMove, Signatures::CL_SendMove.Get(), void, __fastcall,
+	void* ecx)
 {
 	F::SeedPred->AskForPlayerPerf();
 
@@ -33,5 +34,5 @@ MAKE_HOOK(
 		Shifting::bRecharging = false;
 	}
 
-	CALL_ORIGINAL(ecx, edx);
+	CALL_ORIGINAL(ecx);
 }

@@ -1,6 +1,8 @@
 #pragma once
 #include "c_baseprojectile.h"
-#include "Signatures.h"
+#include "../../Utils/SignatureManager/SignatureManager.h"
+
+MAKE_SIGNATURE(CBaseCombatWeapon_HasAmmo, "client.dll", "40 53 48 83 EC ? 83 B9 ? ? ? ? ? 48 8B D9 75 ? 83 B9 ? ? ? ? ? 74 ? 48 8B 01", 0x0);
 
 class C_BaseCombatWeapon : public C_BaseAnimating
 {
@@ -21,6 +23,6 @@ public:
 	NETVAR(m_hOwner, EHANDLE, "CBaseCombatWeapon", "m_hOwner");
 
 	bool HasAmmo() {
-		return reinterpret_cast<bool(__thiscall *)(void *)>(Signatures::CBaseCombatWeapon_HasAmmo.Get())(this);
+		return reinterpret_cast<bool(__fastcall *)(void *)>(Signatures::CBaseCombatWeapon_HasAmmo.Get())(this);
 	}
 };

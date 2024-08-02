@@ -10,9 +10,8 @@
 #include "../Features/TeamWellBeing/TeamWellBeing.h"
 #include "../Features/SeedPred/SeedPred.h"
 
-MAKE_HOOK(
-	IEngineVGuiInternal_Paint, Memory::GetVFunc(I::EngineVGui, 14),
-	void, __fastcall, void *ecx, int mode)
+MAKE_HOOK(IEngineVGuiInternal_Paint, Memory::GetVFunc(I::EngineVGui, 14), void, __fastcall,
+	void *ecx, int mode)
 {
 	CALL_ORIGINAL(ecx, mode);
 

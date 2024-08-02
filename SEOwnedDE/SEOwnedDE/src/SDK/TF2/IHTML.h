@@ -9,7 +9,7 @@ enum MOUSE_STATE
 {
 	UP,
 	DOWN,
-	MOVE,
+	MMOVE,
 	DBLCLICK
 };
 

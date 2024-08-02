@@ -2,9 +2,10 @@
 
 #include "../Features/CFG.h"
 
-MAKE_HOOK(
-	C_TFRagdoll_CreateTFRagdoll, Memory::RelToAbs(Signatures::C_TFRagdoll_CreateTFRagdoll.Get()),
-	void, __fastcall, C_TFRagdoll* ecx, void* edx)
+MAKE_SIGNATURE(CTFRagdoll_CreateTFRagdoll, "client.dll", "48 89 4C 24 ? 55 53 56 57 48 8D AC 24 ? ? ? ? B8 ? ? ? ? E8 ? ? ? ? 48 2B E0 8B 91", 0x0);
+
+MAKE_HOOK(CTFRagdoll_CreateTFRagdoll, Signatures::CTFRagdoll_CreateTFRagdoll.Get(), void, __fastcall,
+	C_TFRagdoll* ecx)
 {
 	if (CFG::Visuals_Disable_Ragdolls)
 		return;
@@ -36,5 +37,5 @@ MAKE_HOOK(
 		}
 	}
 
-	CALL_ORIGINAL(ecx, edx);
+	CALL_ORIGINAL(ecx);
 }

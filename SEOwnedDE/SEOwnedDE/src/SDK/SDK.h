@@ -23,6 +23,7 @@
 #include "TF2/itoolentity.h"
 #include "TF2/random.h"
 #include "TF2/client.h"
+#include "TF2/iviewrender.h"
 #include "TF2/iviewrender_beams.h"
 #include "TF2/vphysics.h"
 #include "TF2/renderutils.h"
@@ -45,24 +46,44 @@
 #define PRINT(...) I::CVar->ConsoleColorPrintf({ 20, 220, 55, 255 }, __VA_ARGS__)
 
 //MAKE_INTERFACE_SIGNATURE(int, RandomSeed, "client.dll", "C7 05 ? ? ? ? ? ? ? ? C3 8B 41", 0x2, 1);
-MAKE_INTERFACE_SIGNATURE(CTFGameMovement, TFGameMovement, "client.dll", "48 8D 0D ? ? ? ? E8 ? ? ? ? 48 8D 05 ? ? ? ? 48 C7 05 ? ? ? ? ? ? ? ? 48 8D 0D ? ? ? ? 48 89 05 ? ? ? ? C6 05", 0, 1);
 
-class IViewRender
-{
-public:
-	void RenderView(const CViewSetup &view, int nClearFlags, int whatToDraw) {
-		reinterpret_cast<void(__thiscall *)(void *, const CViewSetup &, int, int)>(Signatures::CViewRender_RenderView.Get())(this, view, nClearFlags, whatToDraw);
-	}
-};
-
-MAKE_INTERFACE_NULL(IViewRender, ViewRender);
+MAKE_SIGNATURE(RandomSeed, "client.dll", "0F B6 1D ? ? ? ? 89 9D", 0x0);
+MAKE_SIGNATURE(SharedRandomInt, "client.dll", "48 89 5C 24 ? 57 48 83 EC ? 8B FA 41 8B D8", 0x0);
+MAKE_SIGNATURE(BInEndOfMatch, "client.dll", "48 83 EC ? 48 8B 05 ? ? ? ? 48 85 C0 74 ? 83 78 ? ? 75", 0x0);
+MAKE_SIGNATURE(GetClientInterpAmount, "client.dll", "40 53 48 83 EC ? 8B 05 ? ? ? ? A8 ? 75 ? 48 8B 0D ? ? ? ? 48 8D 15", 0x0);
+MAKE_SIGNATURE(LookupSequence, "client.dll", "55 8B EC 56 8B 75 08 85 F6 75 05 33 C0 5E 5D C3 8B CE E8 ? ? ? ? 84 C0 74 F0 53 57 8B CE 33 FF", 0x0); // update me
 
 namespace SDKUtils
 {
+	inline BOOL CALLBACK TeamFortressWindow(HWND hwnd, LPARAM lParam) // do not use me
+	{
+		char windowTitle[1024];
+		GetWindowTextA(hwnd, windowTitle, sizeof(windowTitle));
+		if (std::string(windowTitle).find("Team Fortress 2 - ") == 0) // support both dx9 & vulkan
+			*reinterpret_cast<HWND*>(lParam) = hwnd;
+
+		return TRUE;
+	}
+
+	inline HWND GetTeamFortressWindow()
+	{
+		static HWND hwWindow = nullptr;
+		while (!hwWindow)
+		{
+			EnumWindows(TeamFortressWindow, reinterpret_cast<LPARAM>(&hwWindow));
+			Sleep(100);
+		}
+		return hwWindow;
+	}
+
+	inline bool IsGameWindowInFocus()
+	{
+		return GetForegroundWindow() == SDKUtils::GetTeamFortressWindow();
+	}
 
 	inline int* RandomSeed()
 	{
-		static auto dest = Memory::RelToAbs(Memory::FindSignature("client.dll", "0F B6 1D ? ? ? ? 89 9D"));
+		static auto dest = Memory::RelToAbs(Signatures::RandomSeed.Get());
 		return reinterpret_cast<int*>(dest);
 	}
 
@@ -263,7 +284,6 @@ namespace G
 	inline bool bCanHeadshot = false;
 	inline int nOldButtons = 0;
 	inline Vec3 vUserCmdAngles = {};
-	inline bool CHudTFCrosshair_ShouldDraw_Result = false;
 
 	struct VelFixRecord_t
 	{
@@ -337,8 +357,6 @@ struct ShaderStencilState_t
 		pRenderContext->SetStencilWriteMask(m_nWriteMask);
 	}
 };
-
-MAKE_SIGNATURE(GetClientInterpAmount, "client.dll", "55 8B EC A1 ? ? ? ? 83 EC 08 56 A8 01", 0);
 
 inline float GetClientInterpAmount()
 {

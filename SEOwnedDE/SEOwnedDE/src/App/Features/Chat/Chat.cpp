@@ -2,6 +2,8 @@
 
 #include "../CFG.h"
 
+MAKE_SIGNATURE(CTFGameRules_ModifySentChat, "client.dll", "55 8B EC 80 B9 ? ? ? ? ? 56 8B 75 08 74 26", 0x0); // update me
+
 //pasted from mfed :muscle:
 const std::vector<std::pair<std::string, std::string>> patterns
 {
@@ -38,12 +40,8 @@ std::string owoify(std::string text)
     return text;
 }
 
-MAKE_HOOK(
-    IVEngineClient013_ClientCmd_Unrestricted,
-    Memory::GetVFunc(I::EngineClient, 106),
-    void,
-    __fastcall,
-    void *ecx, void *edx, const char *szCmdString)
+MAKE_HOOK(IVEngineClient013_ClientCmd_Unrestricted, Memory::GetVFunc(I::EngineClient, 106), void, __fastcall,
+    void* ecx, const char *szCmdString)
 {
     if (CFG::Misc_Chat_Owoify)
     {
@@ -53,7 +51,7 @@ MAKE_HOOK(
 
             if (cmdString.rfind("say", 0) != 0)
             {
-                return CALL_ORIGINAL(ecx, edx, szCmdString);
+                return CALL_ORIGINAL(ecx, szCmdString);
             }
 
             std::smatch match{};
@@ -61,19 +59,15 @@ MAKE_HOOK(
 
             cmdString = match[1].str() + "\"" + owoify(match[2].str()) + "\"";
 
-            return CALL_ORIGINAL(ecx, edx, cmdString.c_str());
+            return CALL_ORIGINAL(ecx, cmdString.c_str());
         }
     }
 
-    return CALL_ORIGINAL(ecx, edx, szCmdString);
+    return CALL_ORIGINAL(ecx, szCmdString);
 }
 
-MAKE_HOOK(
-    C_TFGameRules_ModifySentChat,
-    Signatures::C_TFGameRules_ModifySentChat.Get(),
-    void,
-    __fastcall,
-    void *ecx, void *edx, char *pBuf, int iBufSize)
+MAKE_HOOK(CTFGameRules_ModifySentChat, Signatures::CTFGameRules_ModifySentChat.Get(), void, __fastcall,
+    void *ecx, char *pBuf, int iBufSize)
 {
     static ConVar *tf_medieval_autorp{ I::CVar->FindVar("tf_medieval_autorp") };
     static ConVar *english{ I::CVar->FindVar("english") };
@@ -90,7 +84,7 @@ MAKE_HOOK(
 
         if (!tf_medieval_autorp || !english || !gamerules)
         {
-            return CALL_ORIGINAL(ecx, edx, pBuf, iBufSize);
+            return CALL_ORIGINAL(ecx, pBuf, iBufSize);
         }
 
         bool originalEnglish{ english->GetBool() };
@@ -101,7 +95,7 @@ MAKE_HOOK(
         tf_medieval_autorp->SetValue(true);
         english->SetValue(true);
 
-        CALL_ORIGINAL(ecx, edx, pBuf, iBufSize);
+        CALL_ORIGINAL(ecx, pBuf, iBufSize);
 
         gamerules->m_bPlayingMedieval = originalPlaying;
         tf_medieval_autorp->SetValue(originalAutoRP);
@@ -110,5 +104,5 @@ MAKE_HOOK(
         return;
     }
 
-    CALL_ORIGINAL(ecx, edx, pBuf, iBufSize);
+    CALL_ORIGINAL(ecx, pBuf, iBufSize);
 }

@@ -1,13 +1,14 @@
 #include "../../SDK/SDK.h"
 
-MAKE_HOOK(
-	CHudTFCrosshair_ShouldDraw, Signatures::CHudTFCrosshair_ShouldDraw.Get(),
-	bool, __fastcall, void* ecx, void* edx)
+MAKE_SIGNATURE(CHudTFCrosshair_ShouldDraw, "client.dll", "8B 15 ? ? ? ? 57 8B F9 85 D2", 0x0);
+
+MAKE_HOOK(CHudTFCrosshair_ShouldDraw, Signatures::CHudTFCrosshair_ShouldDraw.Get(), bool, __fastcall,
+	void* ecx)
 {
 	if (G::bStartedFakeTaunt)
 	{
-		return G::CHudTFCrosshair_ShouldDraw_Result = false;
+		return false;
 	}
 
-	return G::CHudTFCrosshair_ShouldDraw_Result = CALL_ORIGINAL(ecx, edx);
+	return CALL_ORIGINAL(ecx);
 }

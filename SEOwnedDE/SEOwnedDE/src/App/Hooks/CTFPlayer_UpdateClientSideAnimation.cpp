@@ -2,9 +2,8 @@
 
 #include "../Features/CFG.h"
 
-MAKE_HOOK(
-	C_TFPlayer_UpdateClientSideAnimation, Signatures::C_TFPlayer_UpdateClientSideAnimation.Get(),
-	void, __fastcall, C_TFPlayer* ecx, void* edx)
+MAKE_HOOK(CTFPlayer_UpdateClientSideAnimation, Signatures::CTFPlayer_UpdateClientSideAnimation.Get(), void, __fastcall,
+	C_TFPlayer* ecx)
 {
 	if (CFG::Misc_Accuracy_Improvements)
 	{
@@ -21,7 +20,7 @@ MAKE_HOOK(
 
 					return;
 				}
-				CALL_ORIGINAL(ecx, edx);
+				CALL_ORIGINAL(ecx);
 			}
 		}
 
@@ -31,5 +30,5 @@ MAKE_HOOK(
 		}
 	}
 
-	CALL_ORIGINAL(ecx, edx);
+	CALL_ORIGINAL(ecx);
 }

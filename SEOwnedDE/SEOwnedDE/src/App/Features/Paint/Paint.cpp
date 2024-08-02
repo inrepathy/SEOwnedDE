@@ -202,7 +202,7 @@ void CPaint::Run()
 						}
 					}
 
-					RenderUtils::RenderLine(v[n].Position, v[n - 1].Position, Rainbow(n), false);
+					RenderUtils::RenderLine(v[n].Position, v[n - 1].Position, Rainbow(int(n)), false);
 				}
 
 				bDrewSomething = true;

@@ -2,9 +2,14 @@
 
 #include "../Features/CFG.h"
 
-MAKE_HOOK(
-	CTFPlayerShared_InCond, Signatures::CTFPlayerShared_InCond.Get(),
-	bool, __fastcall, void* ecx, void* edx, ETFCond cond)
+MAKE_SIGNATURE(CTFPlayerShared_InCond, "client.dll", "48 89 5C 24 ? 57 48 83 EC ? 8B DA 48 8B F9 83 FA ? 7D", 0x0);
+MAKE_SIGNATURE(InCond_HudScopePaint, "client.dll", "E8 ? ? ? ? 84 C0 74 2E 8B CE E8 ? ? ? ? 85 C0 74 1A", 0x5); // update me
+MAKE_SIGNATURE(InCond_ViewModelShouldDraw, "client.dll", "8D 88 ? ? ? ? E8 ? ? ? ? 84 C0 74 03 32 C0 C3", 0xB); // update me
+MAKE_SIGNATURE(InCond_PlayerShouldDraw, "client.dll", "E8 ? ? ? ? 84 C0 74 ? 32 C0 48 8B 74 24", 0x5);
+MAKE_SIGNATURE(InCond_WearableShouldDraw, "client.dll", "E8 ? ? ? ? 84 C0 0F 85 ? ? ? ? 41 BF", 0x5);
+
+MAKE_HOOK(CTFPlayerShared_InCond, Signatures::CTFPlayerShared_InCond.Get(), bool, __fastcall,
+	void* ecx, ETFCond cond)
 {
 	if (cond == TF_COND_DISGUISED || cond == TF_COND_DISGUISING)
 	{
@@ -61,5 +66,5 @@ MAKE_HOOK(
 		}
 	}
 
-	return CALL_ORIGINAL(ecx, edx, cond);
+	return CALL_ORIGINAL(ecx, cond);
 }

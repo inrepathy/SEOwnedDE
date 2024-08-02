@@ -2,9 +2,11 @@
 
 #include "../Features/CFG.h"
 
+MAKE_SIGNATURE(CTFWeaponBase_GetShootSound, "client.dll", "40 55 56 41 56 48 83 EC ? 80 B9", 0x0);
+
 MAKE_HOOK(
-	CTFWeaponBase_GetShootSound, Signatures::CTFWeaponBase_GetShootSound.Get(),
-	const char*, __fastcall, C_TFWeaponBase* ecx, void* edx, int iIndex)
+	CTFWeaponBase_GetShootSound, Signatures::CTFWeaponBase_GetShootSound.Get(), const char*, __fastcall,
+	C_TFWeaponBase* ecx, int iIndex)
 {
 	if (CFG::Misc_MVM_Giant_Weapon_Sounds)
 	{
@@ -16,7 +18,7 @@ MAKE_HOOK(
 				{
 					const int nOldTeam = pWeapon->m_iTeamNum();
 					pWeapon->m_iTeamNum() = TF_TEAM_PVE_INVADERS_GIANTS;
-					const auto ret = CALL_ORIGINAL(ecx, edx, iIndex);
+					const auto ret = CALL_ORIGINAL(ecx, iIndex);
 					pWeapon->m_iTeamNum() = nOldTeam;
 
 					//credits: KGB
@@ -42,5 +44,5 @@ MAKE_HOOK(
 		}
 	}
 
-	return CALL_ORIGINAL(ecx, edx, iIndex);
+	return CALL_ORIGINAL(ecx, iIndex);
 }

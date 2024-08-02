@@ -1,5 +1,8 @@
 #include "../../SDK/SDK.h"
 
+MAKE_SIGNATURE(INetChannel_SendNetMsg, "engine.dll", "48 89 5C 24 ? 48 89 74 24 ? 48 89 7C 24 ? 41 56 48 83 EC ? 48 8B F1 45 0F B6 F1", 0x0);
+MAKE_SIGNATURE(WriteUsercmd, "client.dll", "55 8B EC 83 EC 08 53 8B 5D 0C 56 8B 75 10 57 8B 7D 08 8B 46 04 40 39 43 04 8B 47 0C", 0x0); // update me
+
 //credits: KGB
 
 bool WriteUsercmdDeltaToBuffer(bf_write* buf, int from, int to)
@@ -33,9 +36,8 @@ bool WriteUsercmdDeltaToBuffer(bf_write* buf, int from, int to)
 	return !buf->m_bOverflow;
 }
 
-MAKE_HOOK(
-	INetChannel_SendNetMsg, Signatures::INetChannel_SendNetMsg.Get(),
-	bool, __fastcall, CNetChannel* pNet, void* edx, INetMessage& msg, bool bForceReliable, bool bVoice)
+MAKE_HOOK(INetChannel_SendNetMsg, Signatures::INetChannel_SendNetMsg.Get(), bool, __fastcall,
+	CNetChannel* pNet, INetMessage& msg, bool bForceReliable, bool bVoice)
 {
 	if (msg.GetType() == clc_Move)
 	{
@@ -63,7 +65,9 @@ MAKE_HOOK(
 
 		for (int nTo = nNextCommandNr - nNumCmds + 1; nTo <= nNextCommandNr; nTo++)
 		{
-			bOk = bOk && WriteUsercmdDeltaToBuffer(&pMsg->m_DataOut, nFrom, nTo);
+			//bOk = bOk && WriteUsercmdDeltaToBuffer(&pMsg->m_DataOut, nFrom, nTo);
+			const bool bIsNewCmd = nTo >= nNextCommandNr - pMsg->m_nNewCommands + 1;
+			bOk = bOk && I::BaseClientDLL->WriteUsercmdDeltaToBuffer(&pMsg->m_DataOut, nFrom, nTo, bIsNewCmd);
 			nFrom = nTo;
 		}
 
@@ -74,11 +78,11 @@ MAKE_HOOK(
 				pNet->m_nChokedPackets -= nExtraCommands;
 			}
 
-			CALL_ORIGINAL(pNet, edx, reinterpret_cast<INetMessage&>(*pMsg), bForceReliable, bVoice);
+			CALL_ORIGINAL(pNet, reinterpret_cast<INetMessage&>(*pMsg), bForceReliable, bVoice);
 		}
 
 		return true;
 	}
 
-	return CALL_ORIGINAL(pNet, edx, msg, bForceReliable, bVoice);
+	return CALL_ORIGINAL(pNet, msg, bForceReliable, bVoice);
 }

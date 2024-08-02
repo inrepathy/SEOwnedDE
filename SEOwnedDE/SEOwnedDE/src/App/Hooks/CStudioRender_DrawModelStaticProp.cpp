@@ -2,9 +2,8 @@
 
 #include "../Features/CFG.h"
 
-MAKE_HOOK(
-	CStudioRender_DrawModelStaticProp, Memory::GetVFunc(I::StudioRender, 30),
-	void, __fastcall, void* ecx, void* edx, const DrawModelInfo_t& drawInfo, const matrix3x4_t &modelToWorld, int flags)
+MAKE_HOOK(CStudioRender_DrawModelStaticProp, Memory::GetVFunc(I::StudioRender, 30), void, __fastcall,
+	void* ecx, const DrawModelInfo_t& drawInfo, const matrix3x4_t &modelToWorld, int flags)
 {
 	if (CFG::Visuals_Distance_Prop_Alpha)
 	{
@@ -43,5 +42,5 @@ MAKE_HOOK(
 		I::StudioRender->SetColorModulation(CFG::Color_Props);
 	}
 
-	CALL_ORIGINAL(ecx, edx, drawInfo, modelToWorld, flags);
+	CALL_ORIGINAL(ecx, drawInfo, modelToWorld, flags);
 }

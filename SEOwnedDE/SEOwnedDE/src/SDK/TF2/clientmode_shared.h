@@ -10,69 +10,81 @@ class C_BasePlayer;
 class CBaseViewport;
 class CReplayReminderPanel;
 
-MAKE_SIGNATURE(PrintToChat, "client.dll", "55 8B EC 81 EC 00 0C 00 00 B9 ? ? ? ? 56 68 ? ? ? ? E8 ? ? ? ? 8B F0 85 F6 74 ? 68 00 08 00 00 8D 85 00 F4 FF FF 6A 00 50 E8 ? ? ? ? 8B 0D ? ? ? ? 8D 95 00 F4 FF FF 83 C4 0C 8B 01 FF 75 0C", 0);
+class CBaseHudChat
+{
+public:
+	void ChatPrintf(int pIndex, const char* fmt, ...)
+	{
+		typedef void(_cdecl* FN)(void*, int, int, const char*, ...);
+		reinterpret_cast<FN>(Memory::GetVFunc(this, 19))(this, pIndex, 0, fmt);
+	}
+
+	void StartMessageMode(int iMessageModeType)
+	{
+		typedef void(__fastcall* FN)(void*, int);
+		reinterpret_cast<FN>(Memory::GetVFunc(this, 20))(this, iMessageModeType);
+	}
+};
 
 class CClientModeShared : public IClientMode, public CGameEventListener
 {
 public:
-	virtual ~CClientModeShared();
-	virtual void Init();
-	virtual void InitViewport();
-	virtual void VGui_Shutdown();
-	virtual void Shutdown();
-	virtual void LevelInit(const char *newmap);
-	virtual void LevelShutdown(void);
-	virtual void Enable();
-	virtual void Disable();
-	virtual void Layout();
-	virtual void ReloadScheme(bool flushLowLevel);
-	virtual void OverrideView(CViewSetup *pSetup);
-	virtual bool ShouldDrawDetailObjects();
-	virtual bool ShouldDrawEntity(C_BaseEntity *pEnt);
-	virtual bool ShouldDrawLocalPlayer(C_BasePlayer *pPlayer);
-	virtual bool ShouldDrawViewModel();
-	virtual bool ShouldDrawParticles();
-	virtual bool ShouldDrawCrosshair(void);
-	virtual bool ShouldBlackoutAroundHUD() override;
-	virtual HeadtrackMovementMode_t ShouldOverrideHeadtrackControl() override;
-	virtual void AdjustEngineViewport(int &x, int &y, int &width, int &height);
-	virtual void PreRender(CViewSetup *pSetup);
-	virtual void PostRender();
-	virtual void PostRenderVGui();
-	virtual void ProcessInput(bool bActive);
-	virtual bool CreateMove(float flInputSampleTime, CUserCmd *cmd);
-	virtual void Update();
-	virtual int KeyInput(int down, ButtonCode_t keynum, const char *pszCurrentBinding);
-	virtual int HudElementKeyInput(int down, ButtonCode_t keynum, const char *pszCurrentBinding);
-	virtual void OverrideMouseInput(float *x, float *y);
-	virtual void StartMessageMode(int iMessageModeType);
-	virtual Panel *GetMessagePanel();
-	virtual void ActivateInGameVGuiContext(Panel *pPanel);
-	virtual void DeactivateInGameVGuiContext();
-	virtual bool ShouldDrawFog(void);
-	virtual float GetViewModelFOV(void);
-	virtual Panel *GetViewport() { }
-	virtual AnimationController *GetViewportAnimationController() {}
-	virtual void FireGameEvent(IGameEvent *event);
-	virtual bool CanRecordDemo(char *errorMsg, int length) const { return true; }
-	virtual int HandleSpectatorKeyInput(int down, ButtonCode_t keynum, const char *pszCurrentBinding);
-	virtual void ComputeVguiResConditions(KeyValues *pkvConditions) override;
-	virtual wchar_t *GetServerName() { return nullptr; }
-	virtual void SetServerName(wchar_t *name) {}
-	virtual wchar_t *GetMapName() { return nullptr; }
-	virtual void SetMapName(wchar_t *name) {}
-	virtual bool DoPostScreenSpaceEffects(const CViewSetup *pSetup);
-	virtual void DisplayReplayMessage(const char *pLocalizeName, float flDuration, bool bUrgent, const char *pSound, bool bDlg);
+	virtual ~CClientModeShared() {};
+	virtual void Init() = 0;
+	virtual void InitViewport() = 0;
+	virtual void VGui_Shutdown() = 0;
+	virtual void Shutdown() = 0;
+	virtual void LevelInit(const char* newmap) = 0;
+	virtual void LevelShutdown(void) = 0;
+	virtual void Enable() = 0;
+	virtual void Disable() = 0;
+	virtual void Layout() = 0;
+	virtual void ReloadScheme(bool flushLowLevel) = 0;
+	virtual void OverrideView(CViewSetup* pSetup) = 0;
+	virtual bool ShouldDrawDetailObjects() = 0;
+	virtual bool ShouldDrawEntity(C_BaseEntity* pEnt) = 0;
+	virtual bool ShouldDrawLocalPlayer(C_BasePlayer* pPlayer) = 0;
+	virtual bool ShouldDrawViewModel() = 0;
+	virtual bool ShouldDrawParticles() = 0;
+	virtual bool ShouldDrawCrosshair(void) = 0;
+	virtual bool ShouldBlackoutAroundHUD() override = 0;
+	virtual HeadtrackMovementMode_t ShouldOverrideHeadtrackControl() override = 0;
+	virtual void AdjustEngineViewport(int& x, int& y, int& width, int& height) = 0;
+	virtual void PreRender(CViewSetup* pSetup) = 0;
+	virtual void PostRender() = 0;
+	virtual void PostRenderVGui() = 0;
+	virtual void ProcessInput(bool bActive) = 0;
+	virtual bool CreateMove(float flInputSampleTime, CUserCmd* cmd) = 0;
+	virtual void Update() = 0;
+	virtual int KeyInput(int down, ButtonCode_t keynum, const char* pszCurrentBinding) = 0;
+	virtual int HudElementKeyInput(int down, ButtonCode_t keynum, const char* pszCurrentBinding) = 0;
+	virtual void OverrideMouseInput(float* x, float* y) = 0;
+	virtual void StartMessageMode(int iMessageModeType) = 0;
+	virtual Panel* GetMessagePanel() = 0;
+	virtual void ActivateInGameVGuiContext(Panel* pPanel) = 0;
+	virtual void DeactivateInGameVGuiContext() = 0;
+	virtual bool ShouldDrawFog(void) = 0;
+	virtual float GetViewModelFOV(void) = 0;
+	virtual Panel* GetViewport() {}
+	virtual AnimationController* GetViewportAnimationController() {}
+	virtual void FireGameEvent(IGameEvent* event) = 0;
+	virtual bool CanRecordDemo(char* errorMsg, int length) const { return true; }
+	virtual int HandleSpectatorKeyInput(int down, ButtonCode_t keynum, const char* pszCurrentBinding) = 0;
+	virtual void ComputeVguiResConditions(KeyValues* pkvConditions) override = 0;
+	virtual wchar_t* GetServerName() { return nullptr; }
+	virtual void SetServerName(wchar_t* name) {}
+	virtual wchar_t* GetMapName() { return nullptr; }
+	virtual void SetMapName(wchar_t* name) {}
+	virtual bool DoPostScreenSpaceEffects(const CViewSetup* pSetup) = 0;
+	virtual void DisplayReplayMessage(const char* pLocalizeName, float flDuration, bool bUrgent, const char* pSound, bool bDlg) = 0;
 	virtual bool IsInfoPanelAllowed() override { return true; }
-	virtual void InfoPanelDisplayed() override { }
+	virtual void InfoPanelDisplayed() override {}
 	virtual bool IsHTMLInfoPanelAllowed() override { return true; }
-	virtual void OnDemoRecordStart(char const *pDemoBaseName) override {}
+	virtual void OnDemoRecordStart(char const* pDemoBaseName) override {}
 	virtual void OnDemoRecordStop() override {}
 
-	void PrintToChat(const char *pText)
-	{
-		reinterpret_cast<void(__thiscall *)(void *, const char *, KeyValues *)>(Signatures::PrintToChat.Get())(this, pText, nullptr);
-	}
+	char szPad[24];
+	CBaseHudChat* m_pChatElement;
 };
 
-MAKE_INTERFACE_SIGNATURE(CClientModeShared, ClientModeShared, "client.dll", "48 8B 0D ? ? ? ? 48 8B 10 48 8B 19 48 8B C8 FF 92", 0, 1);
+MAKE_INTERFACE_SIGNATURE(CClientModeShared, ClientModeShared, "client.dll", "48 8B 0D ? ? ? ? 48 8B 10 48 8B 19 48 8B C8 FF 92", 0x0, 1);

@@ -1,5 +1,7 @@
 #include "Input.h"
 
+#include "../../SDK.h"
+
 bool CInput::IsPressedAndHeld(short key)
 {
 	auto Now = std::chrono::steady_clock::now();
@@ -19,10 +21,7 @@ bool CInput::IsPressedAndHeld(short key)
 
 void CInput::Update()
 {
-	//static auto TF2Window = FindWindowA(0, "Team Fortress 2 - Direct3D 9 - 64 Bit");
-	static auto TF2Window = FindWindowA("Valve001", nullptr);
-
-	m_bGameFocused = GetForegroundWindow() == TF2Window;
+	m_bGameFocused = SDKUtils::IsGameWindowInFocus();
 
 	for (int n = 0; n < 256; n++)
 	{

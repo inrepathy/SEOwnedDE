@@ -1,7 +1,9 @@
 #pragma once
 #include "c_basecombatcharacter.h"
 #include "usercmd.h"
-#include "Signatures.h"
+#include "../../Utils/SignatureManager/SignatureManager.h"
+
+MAKE_SIGNATURE(CBasePlayer_GetAmmoCount, "client.dll", "48 89 5C 24 ? 57 48 83 EC ? 48 63 DA 48 8B F9 83 FB", 0x0);
 
 class C_BasePlayer : public C_BaseCombatCharacter
 {
@@ -65,44 +67,47 @@ public:
 	NETVAR(m_szLastPlaceName, const char *, "CBasePlayer", "m_szLastPlaceName");
 
 	float &m_flWaterJumpTime() {
-		return *reinterpret_cast<float *>(reinterpret_cast<std::uintptr_t>(this) + 0x1120);
+		static int nOffset = NetVars::GetNetVar("CBasePlayer", "m_fOnTarget") - 60;
+		return *reinterpret_cast<float *>(reinterpret_cast<std::uintptr_t>(this) + nOffset);
 	}
 
 	float &m_flSwimSoundTime() {
-		return *reinterpret_cast<float *>(reinterpret_cast<std::uintptr_t>(this) + 0x1128);
+		static int nOffset = NetVars::GetNetVar("CBasePlayer", "m_fOnTarget") - 44;
+		return *reinterpret_cast<float *>(reinterpret_cast<std::uintptr_t>(this) + nOffset);
 	}
 
 	Vec3 &m_vecLadderNormal() {
-		return *reinterpret_cast<Vec3 *>(reinterpret_cast<std::uintptr_t>(this) + 0x112C);
+		static int nOffset = NetVars::GetNetVar("CBasePlayer", "m_fOnTarget") - 36;
+		return *reinterpret_cast<Vec3 *>(reinterpret_cast<std::uintptr_t>(this) + nOffset);
 	}
 
 	void SetCurrentCommand(CUserCmd *pCmd) {
-		static int nOffset = NetVars::GetNetVar("CBasePlayer", "m_hConstraintEntity") - 4;
+		static int nOffset = NetVars::GetNetVar("CBasePlayer", "m_hConstraintEntity") - 8;
 		*reinterpret_cast<CUserCmd **>(reinterpret_cast<std::uintptr_t>(this) + nOffset) = pCmd;
 	}
 
 	int &m_nButtons() {
-		static int nOffset = NetVars::GetNetVar("CBasePlayer", "m_hConstraintEntity") - 8;
+		static int nOffset = NetVars::GetNetVar("CBasePlayer", "m_hConstraintEntity") - 12;
 		return *reinterpret_cast<int *>(reinterpret_cast<std::uintptr_t>(this) + nOffset);
 	}
 
 	int &m_surfaceProps() {
-		static int nOffset = 4768;
+		static int nOffset = NetVars::GetNetVar("CBasePlayer", "m_hLastWeapon") + 72;
 		return *reinterpret_cast<int *>(reinterpret_cast<std::uintptr_t>(this) + nOffset);
 	}
 
 	void *&m_pSurfaceData() {
-		static int nOffset = 4772;
+		static int nOffset = NetVars::GetNetVar("CBasePlayer", "m_hLastWeapon") + 76;
 		return *reinterpret_cast<void **>(reinterpret_cast<std::uintptr_t>(this) + nOffset);
 	}
 
 	float &m_surfaceFriction() {
-		static int nOffset = 4776;
+		static int nOffset = NetVars::GetNetVar("CBasePlayer", "m_hLastWeapon") + 80;
 		return *reinterpret_cast<float *>(reinterpret_cast<std::uintptr_t>(this) + nOffset);
 	}
 
 	char &m_chTextureType() {
-		static int nOffset = 4780;
+		static int nOffset = NetVars::GetNetVar("CBasePlayer", "m_hLastWeapon") + 84;
 		return *reinterpret_cast<char *>(reinterpret_cast<std::uintptr_t>(this) + nOffset);
 	}
 
@@ -111,7 +116,7 @@ public:
 	}
 
 	int m_afButtonLast() {
-		static int nOffset = NetVars::GetNetVar("CBasePlayer", "m_hConstraintEntity") - 20;
+		static int nOffset = NetVars::GetNetVar("CBasePlayer", "m_hConstraintEntity") - 24;
 		return *reinterpret_cast<int *>(reinterpret_cast<std::uintptr_t>(this) + nOffset);
 	}
 };

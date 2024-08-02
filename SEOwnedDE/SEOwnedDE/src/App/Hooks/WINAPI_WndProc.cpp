@@ -6,14 +6,14 @@ LRESULT __stdcall Hooks::WINAPI_WndProc::Func(HWND hWnd, UINT uMsg, WPARAM wPara
 {
 	if (F::Menu->IsOpen() && H::Input->IsGameFocused())
 	{
-		if (GetAsyncKeyState(VK_SNAPSHOT) & 1) ///if (uMsg == WM_KEYUP && wParam == VK_SNAPSHOT) doesn't work
+		if (F::Menu->m_bWantTextInput || F::Menu->m_bInKeybind)
 		{
-			CallWindowProc(Original, hWnd, uMsg, wParam, lParam);
+			I::InputSystem->ResetInputState();
+			return 1;
 		}
 
-		I::InputSystem->ResetInputState();
-
-		return 1;
+		if (uMsg >= WM_MOUSEFIRST && WM_MOUSELAST >= uMsg)
+			return 1;
 	}
 
 	return CallWindowProc(Original, hWnd, uMsg, wParam, lParam);
@@ -21,7 +21,7 @@ LRESULT __stdcall Hooks::WINAPI_WndProc::Func(HWND hWnd, UINT uMsg, WPARAM wPara
 
 void Hooks::WINAPI_WndProc::Init()
 {
-	hwWindow = FindWindowA(nullptr, "Team Fortress 2");
+	hwWindow = SDKUtils::GetTeamFortressWindow();
 	Original = reinterpret_cast<WNDPROC>(SetWindowLongPtr(hwWindow, GWLP_WNDPROC, reinterpret_cast<LONG_PTR>(Func)));
 }
 
