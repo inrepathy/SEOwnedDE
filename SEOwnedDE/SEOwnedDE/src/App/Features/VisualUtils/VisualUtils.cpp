@@ -135,7 +135,7 @@ int CVisualUtils::GetClassIcon(int nClassNum)
 
 	static int nScout = CreateTextureFromVTF("hud/leaderboard_class_scout.vtf");
 	static int nSoldier = CreateTextureFromVTF("hud/leaderboard_class_soldier.vtf");
-	static int nPyro = CreateTextureFromVTF("hud/leaderboard_class_scout.vtf");
+	static int nPyro = CreateTextureFromVTF("hud/leaderboard_class_pyro.vtf");
 	static int nDemoman = CreateTextureFromVTF("hud/leaderboard_class_demo.vtf");
 	static int nHeavy = CreateTextureFromVTF("hud/leaderboard_class_heavy.vtf");
 	static int nEngineer = CreateTextureFromVTF("hud/leaderboard_class_engineer.vtf");
