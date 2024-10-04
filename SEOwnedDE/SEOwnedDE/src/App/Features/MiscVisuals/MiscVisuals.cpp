@@ -76,9 +76,7 @@ void CMiscVisuals::ShiftBar()
 		return;
 
 	if (CFG::Misc_Clean_Screenshot && I::EngineClient->IsTakingScreenshot())
-	{
 		return;
-	}
 
 	if (I::EngineVGui->IsGameUIVisible() || SDKUtils::BInEndOfMatch())
 		return;
@@ -100,6 +98,8 @@ void CMiscVisuals::ShiftBar()
 	const int nBarY = (H::Draw->GetScreenH() / 2) + 100;
 	const int circleX = H::Draw->GetScreenW() / 2;
 
+	const int textY = nBarY - 12;
+
 	if (CFG::Exploits_Shifting_Indicator_Style == 0)
 	{
 		H::Draw->Rect(nBarX - 1, nBarY - 1, nBarW + 2, nBarH + 2, CFG::Menu_Background);
@@ -107,7 +107,7 @@ void CMiscVisuals::ShiftBar()
 		if (Shifting::nAvailableTicks > 0)
 		{
 			const Color_t color = CFG::Menu_Accent_Secondary;
-			const Color_t colorDim = {color.r, color.g, color.b, 25};
+			const Color_t colorDim = { color.r, color.g, color.b, 25 };
 
 			const int nFillWidth = static_cast<int>(Math::RemapValClamped(
 				static_cast<float>(Shifting::nAvailableTicks),
@@ -117,15 +117,23 @@ void CMiscVisuals::ShiftBar()
 
 			H::Draw->GradientRect(nBarX, nBarY, nFillWidth, nBarH, colorDim, color, false);
 			H::Draw->OutlinedRect(nBarX, nBarY, nFillWidth, nBarH, color);
+
+			char tickText[32];
+			snprintf(tickText, sizeof(tickText), "%d", Shifting::nAvailableTicks);
+			H::Draw->String(H::Fonts->Get(EFonts::ESP_SMALL), nBarX, textY, color, 0, tickText);
 		}
 	}
 
 	if (CFG::Exploits_Shifting_Indicator_Style == 1)
 	{
-		const float end{Math::RemapValClamped(static_cast<float>(Shifting::nAvailableTicks), 0.0f, MAX_COMMANDS, -90.0f, 359.0f)};
+		const float end{ Math::RemapValClamped(static_cast<float>(Shifting::nAvailableTicks), 0.0f, MAX_COMMANDS, -90.0f, 359.0f) };
 
 		H::Draw->Arc(circleX, nBarY, 21, 6.0f, -90.0f, 359.0f, CFG::Menu_Background);
 		H::Draw->Arc(circleX, nBarY, 20, 4.0f, -90.0f, end, CFG::Menu_Accent_Secondary);
+
+		wchar_t tickText[32];
+		swprintf(tickText, sizeof(tickText) / sizeof(wchar_t), L"%d", Shifting::nAvailableTicks);
+		H::Draw->String(H::Fonts->Get(EFonts::ESP_SMALL), nBarX, textY, CFG::Menu_Accent_Secondary, 0, tickText);
 	}
 
 	if (G::nTicksSinceCanFire < 30 && F::RapidFire->IsWeaponSupported(pWeapon))
@@ -136,8 +144,8 @@ void CMiscVisuals::ShiftBar()
 
 			if (G::nTicksSinceCanFire > 0)
 			{
-				constexpr Color_t color = {241, 196, 15, 255};
-				constexpr Color_t colorDim = {color.r, color.g, color.b, 25};
+				constexpr Color_t color = { 241, 196, 15, 255 };
+				constexpr Color_t colorDim = { color.r, color.g, color.b, 25 };
 
 				const int nFillWidth = static_cast<int>(Math::RemapValClamped(
 					static_cast<float>(G::nTicksSinceCanFire),
@@ -152,10 +160,10 @@ void CMiscVisuals::ShiftBar()
 
 		if (CFG::Exploits_Shifting_Indicator_Style == 1)
 		{
-			const float end{Math::RemapValClamped(static_cast<float>(G::nTicksSinceCanFire), 0.0f, 24.0f, -90.0f, 359.0f)};
+			const float end{ Math::RemapValClamped(static_cast<float>(G::nTicksSinceCanFire), 0.0f, 24.0f, -90.0f, 359.0f) };
 
 			H::Draw->Arc(circleX, nBarY, 24, 2.0f, -90.0f, 359.0f, CFG::Menu_Background);
-			H::Draw->Arc(circleX, nBarY, 24, 2.0f, -90.0f, end, {241, 196, 15, 255});
+			H::Draw->Arc(circleX, nBarY, 24, 2.0f, -90.0f, end, { 241, 196, 15, 255 });
 		}
 	}
 }
