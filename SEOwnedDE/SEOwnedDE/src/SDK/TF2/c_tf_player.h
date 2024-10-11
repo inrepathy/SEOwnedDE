@@ -386,6 +386,12 @@ public:
 	{
 		reinterpret_cast<void(__fastcall *)(C_TFPlayer *)>(Signatures::CTFPlayer_ThirdPersonSwitch.Get())(this);
 	}
+	
+	float& m_flTankPressure()
+	{
+		static int nOffset = NetVars::GetNetVar("CTFPlayer", "m_Shared") + 636;
+		return *reinterpret_cast<float*>(uintptr_t(this) + nOffset);
+	}
 };
 
 class C_TFRagdoll : public C_BaseFlex
