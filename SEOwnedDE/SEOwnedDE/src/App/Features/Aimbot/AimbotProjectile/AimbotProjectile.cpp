@@ -4,8 +4,6 @@
 #include "../../MovementSimulation/MovementSimulation.h"
 #include "../../ProjectileSim/ProjectileSim.h"
 
-constexpr int GAUGE_OFFSET = 0x1B40; // TODO: ???
-
 void DrawProjPath(const CUserCmd* pCmd, float time)
 {
 	if (!pCmd || !G::bFiring)
@@ -1196,13 +1194,8 @@ bool CAimbotProjectile::ShouldFire(CUserCmd* pCmd, C_TFPlayer* pLocal, C_TFWeapo
 	if (!CFG::Aimbot_AutoShoot)
 	{
 		//fucking fuck
-		if (pWeapon->GetWeaponID() == TF_WEAPON_FLAME_BALL)
-		{
-			const auto flGauge = reinterpret_cast<float*>(reinterpret_cast<std::uintptr_t>(pLocal) + GAUGE_OFFSET);
-
-			if (!flGauge || *flGauge < 100.0f)
-				pCmd->buttons &= ~IN_ATTACK;
-		}
+		if (pWeapon->GetWeaponID() == TF_WEAPON_FLAME_BALL && pLocal->m_flTankPressure() < 100.0f)
+			pCmd->buttons &= ~IN_ATTACK;
 
 		return false;
 	}
@@ -1253,12 +1246,10 @@ void CAimbotProjectile::HandleFire(CUserCmd* pCmd, C_TFWeaponBase* pWeapon, C_TF
 
 	else if (nWeaponID == TF_WEAPON_FLAME_BALL)
 	{
-		const auto flGauge = reinterpret_cast<float*>(reinterpret_cast<std::uintptr_t>(pLocal) + GAUGE_OFFSET);
-
-		if (flGauge && *flGauge >= 100.0f)
+		if (pLocal->m_flTankPressure() >= 100.0f)
 			pCmd->buttons |= IN_ATTACK;
-
-		else pCmd->buttons &= ~IN_ATTACK;
+		else
+			pCmd->buttons &= ~IN_ATTACK;
 	}
 
 	else
@@ -1283,8 +1274,7 @@ bool CAimbotProjectile::IsFiring(const CUserCmd* pCmd, C_TFPlayer* pLocal, C_TFW
 
 	if (nWeaponID == TF_WEAPON_FLAME_BALL)
 	{
-		const auto flGauge = reinterpret_cast<float*>(reinterpret_cast<std::uintptr_t>(pLocal) + GAUGE_OFFSET);
-		return flGauge && *flGauge >= 100.0f && (pCmd->buttons & IN_ATTACK);
+		return pLocal->m_flTankPressure() >= 100.0f && (pCmd->buttons & IN_ATTACK);
 	}
 
 	if (pWeapon->m_iItemDefinitionIndex() == Soldier_m_TheBeggarsBazooka)
